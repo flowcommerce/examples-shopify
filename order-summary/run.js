@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-let rawdata = fs.readFileSync('./samples/example.json');
+let rawdata = fs.readFileSync('./samples/example-2.json');
 let order = JSON.parse(rawdata);
 
 function parseOrder(order) {
@@ -159,7 +159,8 @@ function parseOrder(order) {
   orderSummaryBody.lines = lines;
   orderSummaryBody.discount = discount;
 
-  console.log(orderSummaryBody);
+  return orderSummaryBody;
 };
 
-parseOrder(order);
+let data = JSON.stringify(parseOrder(order));
+fs.writeFileSync('./output/example-2.json', data);
