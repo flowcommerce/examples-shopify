@@ -365,6 +365,7 @@ const shopifyOrder = {
 
 function parseOrder(order) {
   const currency = order.currency;
+  const orderSummaryBody = {};
   const subtotal = {
     price: {
       amount: order.subtotal_price,
@@ -390,128 +391,94 @@ function parseOrder(order) {
     name: "total",
   };
   const shipping = {
-    
-  }
-  const lineData = {
+    price: {
+      amount: order.total_shipping_price_set.shop_money.amount,
+      currency: currency,
+      label: "$" + order.total_shipping_price_set.shop_money.amount,
+    },
+    name: "shipping",
+  };
+  const vat = {
+    price: {
+      amount: order.total_tax,
+      currency: currency,
+      label: "$" + order.total_tax,
+    },
+    name: "vat",
+  };
+  const duty = {
+
+  };
+  const insurance = {
+
+  };
+  const surcharges = {
+
+  };
+
+  const lines = order.line_items.map(function(line) {
+    const attributes = line.properties.map(function(property) {
+      return {
+        key: property.name,
+        name: property.name,
+        value: property.value,
+      }
+    });
+    const lineData = {
       item: {
-        number:
+        number: line.variant_id,
       },
-      name: ,
-      attributes: ,
-      quantity: ,
+      name: line.name, 
+      attributes: attributes,
+      quantity: line.quantity,
       unit: {
         price: {
-          amount: 
-          currency: ,
-          label: 
+          amount: line.price,
+          currency: currency,
+          label: "$" + line.price,
         },
-        discount: 
-        tax: 
-        duty: {
-          rate:,
-          value: {
-            amount: ,
-            currency: 
-            label: 
-          }
+        total: {
+          amount: line.price,
+          currency: currency,
+          label: "$" + line.price,
         },
-        total: 
+        discount: {
+          amount: line.total_discount,
+          currency: currency, 
+          label: "$" + line.total_discount,
+        }
       },
-      description: , 
-      image:,
       line: {
-        price: 
-        discount: 
-        tax: 
-        duty: 
-        total: 
-      }
+        price: {
+          amount: line.price,
+          currency: currency,
+          label: "$" + line.price,
+        },
+        total: {
+          amount: line.price * line.quantity,
+          currency: currency,
+          label: "$" + (line.price * line.quantity),
+        },
+        discount: {
+          amount: line.total_discount,
+          currency: currency, 
+          label: "$" + line.total_discount,
+        }
+      } 
     }
+    return lineData;
   });
-  [
-    {
-      "name": "lorem ipsum JToYKz",
-      "quantity": 1,
-      "image": {
-        "url": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"
-      },
-      "line": {
-        "duty": {
-          "rate": 0.2,
-          "value": {
-            "amount": 1,
-            "currency": "CAD",
-            "label": "lorem ipsum 7uWwdO"
-          }
-        },
-        "tax": {
-          "rate": 0.2,
-          "value": {
-            "amount": 1,
-            "currency": "CAD",
-            "label": "lorem ipsum RNo1Sp"
-          }
-        },
-        "price": {
-          "amount": 1,
-          "currency": "CAD",
-          "label": "lorem ipsum qtJTay"
-        },
-        "total": {
-          "amount": 1,
-          "currency": "CAD",
-          "label": "lorem ipsum k9HyLV"
-        },
-        "discount": {
-          "amount": 1,
-          "currency": "CAD",
-          "label": "lorem ipsum DQIxq7"
-        }
-      },
-      "description": "lorem ipsum QwCVqE",
-      "attributes": [
-        {
-          "key": "lorem ipsum OdIFbM",
-          "name": "lorem ipsum L9ai7D",
-          "value": "lorem ipsum xzGcPO"
-        }
-      ],
-      "unit": {
-        "duty": {
-          "rate": 0.2,
-          "value": {
-            "amount": 1,
-            "currency": "CAD",
-            "label": "lorem ipsum 19cPgm"
-          }
-        },
-        "tax": {
-          "rate": 0.2,
-          "value": {
-            "amount": 1,
-            "currency": "CAD",
-            "label": "lorem ipsum wivKMi"
-          }
-        },
-        "price": {
-          "amount": 1,
-          "currency": "CAD",
-          "label": "lorem ipsum miLB43"
-        },
-        "total": {
-          "amount": 1,
-          "currency": "CAD",
-          "label": "lorem ipsum ufYO36"
-        },
-        "discount": {
-          "amount": 1,
-          "currency": "CAD",
-          "label": "lorem ipsum Ln9U5y"
-        }
-      },
-      "item": {
-        "number": "lorem ipsum nJnSST"
-      }
-    }
-  ];
-}
+  orderSummaryBody.shipping = shipping;
+  orderSummaryBody.subtotal = subtotal;
+  orderSummaryBody.vat = vat;
+  orderSummaryBody.total = total;
+  orderSummaryBody.duty = duty;
+  orderSummaryBody.insurance = insurance;
+  orderSummaryBody.discount = discount;
+  orderSummaryBody.surcharges = surcharges;
+  orderSummaryBody.lines = lines;
+
+  console.log(orderSummaryBody);
+};
+
+parseOrder(shopifyOrder);
