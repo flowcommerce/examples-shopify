@@ -1,0 +1,160 @@
+{
+  "vat": {
+    "price": {
+      "amount": 1,
+      "currency": "CAD",
+      "label": "lorem ipsum 8t4xUd"
+    },
+    "name": "GST",
+    "rate": 0.2
+  },
+  "duty": {
+    "price": {
+      "amount": 1,
+      "currency": "CAD",
+      "label": "lorem ipsum VwOhRk"
+    },
+    "name": "GST",
+    "rate": 0.2
+  },
+  "insurance": {
+    "price": {
+      "amount": 1,
+      "currency": "CAD",
+      "label": "lorem ipsum B3vjIN"
+    },
+    "name": "GST",
+    "rate": 0.2
+  },
+  "total": {
+    "price": {
+      "amount": 1,
+      "currency": "CAD",
+      "label": "lorem ipsum z5sxIG"
+    },
+    "name": "GST",
+    "rate": 0.2
+  },
+  "surcharges": {
+    "price": {
+      "amount": 1,
+      "currency": "CAD",
+      "label": "lorem ipsum awm0Mm"
+    },
+    "name": "GST",
+    "rate": 0.2
+  },
+  "subtotal": {
+    "price": {
+      "amount": 1,
+      "currency": "CAD",
+      "label": "lorem ipsum Vvfzt8"
+    },
+    "name": "GST",
+    "rate": 0.2
+  },
+  "discount": {
+    "price": {
+      "amount": 1,
+      "currency": "CAD",
+      "label": "lorem ipsum fclVUP"
+    },
+    "name": "GST",
+    "rate": 0.2
+  },
+  "lines": [
+    {
+      "name": "lorem ipsum JToYKz",
+      "quantity": 1,
+      "image": {
+        "url": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"
+      },
+      "line": {
+        "duty": {
+          "rate": 0.2,
+          "value": {
+            "amount": 1,
+            "currency": "CAD",
+            "label": "lorem ipsum 7uWwdO"
+          }
+        },
+        "tax": {
+          "rate": 0.2,
+          "value": {
+            "amount": 1,
+            "currency": "CAD",
+            "label": "lorem ipsum RNo1Sp"
+          }
+        },
+        "price": {
+          "amount": 1,
+          "currency": "CAD",
+          "label": "lorem ipsum qtJTay"
+        },
+        "total": {
+          "amount": 1,
+          "currency": "CAD",
+          "label": "lorem ipsum k9HyLV"
+        },
+        "discount": {
+          "amount": 1,
+          "currency": "CAD",
+          "label": "lorem ipsum DQIxq7"
+        }
+      },
+      "description": "lorem ipsum QwCVqE",
+      "attributes": [
+        {
+          "key": "lorem ipsum OdIFbM",
+          "name": "lorem ipsum L9ai7D",
+          "value": "lorem ipsum xzGcPO"
+        }
+      ],
+      "unit": {
+        "duty": {
+          "rate": 0.2,
+          "value": {
+            "amount": 1,
+            "currency": "CAD",
+            "label": "lorem ipsum 19cPgm"
+          }
+        },
+        "tax": {
+          "rate": 0.2,
+          "value": {
+            "amount": 1,
+            "currency": "CAD",
+            "label": "lorem ipsum wivKMi"
+          }
+        },
+        "price": {
+          "amount": 1,
+          "currency": "CAD",
+          "label": "lorem ipsum miLB43"
+        },
+        "total": {
+          "amount": 1,
+          "currency": "CAD",
+          "label": "lorem ipsum ufYO36"
+        },
+        "discount": {
+          "amount": 1,
+          "currency": "CAD",
+          "label": "lorem ipsum Ln9U5y"
+        }
+      },
+      "item": {
+        "number": "lorem ipsum nJnSST"
+      }
+    }
+  ],
+  "shipping": {
+    "price": {
+      "amount": 1,
+      "currency": "CAD",
+      "label": "lorem ipsum fBUTYz"
+    },
+    "name": "GST",
+    "rate": 0.2
+  }
+}
