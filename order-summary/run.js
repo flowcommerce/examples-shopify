@@ -14,32 +14,35 @@ fs.readdir("./samples", function (err, files) {
     let rawdata = fs.readFileSync(`./samples/${file}`);
     let order = JSON.parse(rawdata);
 
-    let data = JSON.stringify(parseOrder(order, fetchImgFromFlow));
+    let data = JSON.stringify(parseOrder(order, fetchImgFromFlow()));
     fs.writeFileSync(`./output/${file}`, data);
   });
 });
 
 function fetchImgFromFlow(variant_id){
-  
-  const options = {
-    host: `api.flow.io`,
-    path: `/demo/catalog/items?number=${variant_id}`,
-    method: 'GET',
-    headers: {
-      "Authorization":password
-    }
+  const flowAPIKey = "HlGgfflLamiTQJ"
+   const options = {
+     host: "api.flow.io",
+    path: `/playground/catalog/items?number=${variant_id}`,
+    method: "GET",
+     headers: {
+       "Authorization": "Basic " + new Buffer(flowAPIKey + ":").toString("base64"),
+     }   
   }
 
   const req = https.request(options, (res) => {
-    console.log(`statusCode: ${res.statusCode}`)
-
+    
     res.on('data', (d) => {
-      console.log(d)
+      d=d.toString('utf8')
+      d=JSON.parse(d)
+
+      console.log(d[0].images[0].url)
+      return d[0].images[0].url
     })
   })
 
   req.on('error', (error) => {
-    console.error(error)
+    // console.error(error)
   })
 
   req.end()
@@ -162,7 +165,7 @@ function parseOrder(order, fetchImg) {
         }
       },
       image: {
-        url : fetchImg(line.variant_id)
+        url : fetchImg
       } 
     }
 
