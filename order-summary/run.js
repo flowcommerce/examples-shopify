@@ -20,7 +20,7 @@ fs.readdir("./samples", function (err, files) {
 
 
 
-function parseOrder(order) {
+function parseOrder(order, fetchImg()) {
   const currency = order.currency;
   const orderSummaryBody = {};
   const subtotal = {
@@ -134,6 +134,9 @@ function parseOrder(order) {
             label: tax ? "$" + tax.price : "",
           },
         }
+      },
+      image: {
+        url : fetchImg();
       } 
     }
 
