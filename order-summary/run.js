@@ -1,4 +1,5 @@
 const fs = require('fs');
+const https = require('https');
 var path = require('path');
 
 // Loop through all the files in the temp directory
@@ -13,14 +14,39 @@ fs.readdir("./samples", function (err, files) {
     let rawdata = fs.readFileSync(`./samples/${file}`);
     let order = JSON.parse(rawdata);
 
-    let data = JSON.stringify(parseOrder(order));
+    let data = JSON.stringify(parseOrder(order, fetchImgFromFlow));
     fs.writeFileSync(`./output/${file}`, data);
   });
 });
 
+function fetchImgFromFlow(variant_id){
+  
+  const options = {
+    host: `api.flow.io`,
+    path: `/demo/catalog/items?number=${variant_id}`,
+    method: 'GET',
+    headers: {
+      "Authorization":password
+    }
+  }
 
+  const req = https.request(options, (res) => {
+    console.log(`statusCode: ${res.statusCode}`)
 
-function parseOrder(order, fetchImg()) {
+    res.on('data', (d) => {
+      console.log(d)
+    })
+  })
+
+  req.on('error', (error) => {
+    console.error(error)
+  })
+
+  req.end()
+
+}
+
+function parseOrder(order, fetchImg) {
   const currency = order.currency;
   const orderSummaryBody = {};
   const subtotal = {
@@ -136,7 +162,7 @@ function parseOrder(order, fetchImg()) {
         }
       },
       image: {
-        url : fetchImg();
+        url : fetchImg(line.variant_id)
       } 
     }
 
