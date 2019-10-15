@@ -12,7 +12,7 @@
   "total_price": "403.00",
   "subtotal_price": "393.00",
   "total_weight": 0,
-  "total_tax": "0.00",
+  "total_tax": "38.40",
   "taxes_included": false,
   "currency": "USD",
   "financial_status": "voided",
@@ -66,6 +66,36 @@
   "source_name": "web",
   "fulfillment_status": "pending",
   "tax_lines": [
+    {
+      "price": "19.20",
+      "rate": 0.04,
+      "title": "NY State Tax",
+      "price_set": {
+      "shop_money": {
+      "amount": "19.20",
+      "currency_code": "USD"
+      },
+      "presentment_money": {
+      "amount": "19.20",
+      "currency_code": "USD"
+      }
+      }
+      },
+      {
+      "price": "19.20",
+      "rate": 0.04,
+      "title": "Monroe County Tax",
+      "price_set": {
+      "shop_money": {
+      "amount": "19.20",
+      "currency_code": "USD"
+      },
+      "presentment_money": {
+      "amount": "19.20",
+      "currency_code": "USD"
+      }
+      }
+      }
   ],
   "tags": "",
   "contact_email": "jon@doe.ca",
@@ -178,6 +208,36 @@
       "discount_allocations": [
       ],
       "tax_lines": [
+        {
+          "price": "19.20",
+          "rate": 0.04,
+          "title": "NY State Tax",
+          "price_set": {
+          "shop_money": {
+          "amount": "19.20",
+          "currency_code": "USD"
+          },
+          "presentment_money": {
+          "amount": "19.20",
+          "currency_code": "USD"
+          }
+          }
+          },
+          {
+          "price": "19.20",
+          "rate": 0.04,
+          "title": "Monroe County Tax",
+          "price_set": {
+          "shop_money": {
+          "amount": "19.20",
+          "currency_code": "USD"
+          },
+          "presentment_money": {
+          "amount": "19.20",
+          "currency_code": "USD"
+          }
+          }
+          }
       ]
     },
     {
@@ -240,6 +300,36 @@
         }
       ],
       "tax_lines": [
+        {
+          "price": "19.20",
+          "rate": 0.04,
+          "title": "NY State Tax",
+          "price_set": {
+          "shop_money": {
+          "amount": "19.20",
+          "currency_code": "USD"
+          },
+          "presentment_money": {
+          "amount": "19.20",
+          "currency_code": "USD"
+          }
+          }
+          },
+          {
+          "price": "19.20",
+          "rate": 0.04,
+          "title": "Monroe County Tax",
+          "price_set": {
+          "shop_money": {
+          "amount": "19.20",
+          "currency_code": "USD"
+          },
+          "presentment_money": {
+          "amount": "19.20",
+          "currency_code": "USD"
+          }
+          }
+          }
       ]
     }
   ],

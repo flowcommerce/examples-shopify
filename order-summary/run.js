@@ -1,7 +1,24 @@
 const fs = require('fs');
+var path = require('path');
 
-let rawdata = fs.readFileSync('./samples/example-2.json');
-let order = JSON.parse(rawdata);
+// Loop through all the files in the temp directory
+fs.readdir("./samples", function (err, files) {
+  if (err) {
+    console.error("Could not list the directory.", err);
+    process.exit(1);
+  }
+
+  files.forEach(function (file, index) {
+    console.log('FILE ===>', file, index);
+    let rawdata = fs.readFileSync(`./samples/${file}`);
+    let order = JSON.parse(rawdata);
+
+    let data = JSON.stringify(parseOrder(order));
+    fs.writeFileSync(`./output/${file}`, data);
+  });
+});
+
+
 
 function parseOrder(order) {
   const currency = order.currency;
@@ -49,12 +66,6 @@ function parseOrder(order) {
   const duty = order.tax_lines.find(function(line) {
     return line.title == "Duty";
   });
-  const insurance = {
-
-  };
-  const surcharges = {
-
-  };
   const lines = order.line_items.map(function(line) {
     const attributes = line.properties.map(function(property) {
       return {
@@ -63,6 +74,10 @@ function parseOrder(order) {
         value: property.value,
       }
     });
+    const tax = line.tax_lines.find(function(taxLine) {
+      return taxLine.title.includes('Tax') || taxLine.title.includes('tax');
+    });
+
     const lineData = {
       item: {
         number: line.variant_id,
@@ -87,19 +102,11 @@ function parseOrder(order) {
           label: "$" + line.total_discount,
         },
         tax: {
-          rate: "", 
+          rate: tax ? tax.rate : "", 
           value: {
-            amount: "",
-            currency: "",
-            label: "",
-          },
-        },
-        duty: {
-          rate: "", 
-          value: {
-            amount: "",
-            currency: "",
-            label: "",
+            amount: tax ? tax.price : "",
+            currency: currency,
+            label: tax ? "$" + tax.price : "",
           },
         }
       },
@@ -120,23 +127,21 @@ function parseOrder(order) {
           label: "$" + line.total_discount,
         },
         tax: {
-          rate: "", 
+          rate: tax ? tax.rate : "", 
           value: {
-            amount: "",
-            currency: "",
-            label: "",
-          },
-        },
-        duty: {
-          rate: "", 
-          value: {
-            amount: "",
-            currency: "",
-            label: "",
+            amount: tax ? tax.price : "",
+            currency: currency,
+            label: tax ? "$" + tax.price : "",
           },
         }
       } 
     }
+
+    if(!tax) {
+      delete lineData.unit.tax;
+      delete lineData.line.tax;
+    }
+
     return lineData;
   });
 
@@ -144,13 +149,13 @@ function parseOrder(order) {
     orderSummaryBody.duty = duty;
   }
 
-  if(insurance) {
-    orderSummaryBody.insurance = insurance;
-  }
+  // if(insurance) {
+  //   orderSummaryBody.insurance = insurance;
+  // }
 
-  if(surcharges) {
-    orderSummaryBody.surcharges = surcharges;
-  }
+  // if(surcharges) {
+  //   orderSummaryBody.surcharges = surcharges;
+  // }
 
   orderSummaryBody.shipping = shipping;
   orderSummaryBody.subtotal = subtotal;
@@ -161,6 +166,3 @@ function parseOrder(order) {
 
   return orderSummaryBody;
 };
-
-let data = JSON.stringify(parseOrder(order));
-fs.writeFileSync('./output/example-2.json', data);
