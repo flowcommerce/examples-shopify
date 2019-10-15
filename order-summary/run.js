@@ -9,47 +9,66 @@ fs.readdir("./samples", function (err, files) {
     process.exit(1);
   }
 
-  files.forEach(function (file, index) {
+  files.forEach(async function (file, index) {
     console.log('FILE ===>', file, index);
     let rawdata = fs.readFileSync(`./samples/${file}`);
     let order = JSON.parse(rawdata);
-
-    let data = JSON.stringify(parseOrder(order, fetchImgFromFlow()));
+    const completedOrder = await parseOrder(order)
+    let data = JSON.stringify(completedOrder, fetchImgFromFlow());
     fs.writeFileSync(`./output/${file}`, data);
   });
 });
 
-function fetchImgFromFlow(variant_id){
-  const flowAPIKey = "HlGgfflLamiTQJ"
-   const options = {
-     host: "api.flow.io",
-    path: `/playground/catalog/items?number=${variant_id}`,
-    method: "GET",
-     headers: {
-       "Authorization": "Basic " + new Buffer(flowAPIKey + ":").toString("base64"),
-     }   
-  }
-
-  const req = https.request(options, (res) => {
+function fetchImgFromFlow(variant_id) {
+  // console.log(variant_id)
+  return new Promise ((resolve,rej)=> {
+    const flowAPIKey = "HlGgfflLamiTQJ"
+    const options = {
+      host: "api.flow.io",
+      path: `/playground/catalog/items?number=${variant_id}`,
+      method: "GET",
+      headers: {
+        "Authorization": "Basic " + new Buffer(flowAPIKey + ":").toString("base64"),
+      }
+    }
     
-    res.on('data', (d) => {
-      d=d.toString('utf8')
-      d=JSON.parse(d)
-
-      console.log(d[0].images[0].url)
-      return d[0].images[0].url
+    const req = https.request(options, (res) => {
+      
+      res.on('data', (d) => {
+        d = d.toString('utf8')
+        d = JSON.parse(d)
+        resolve(d[0])
+      })
     })
+    
+    req.on('error', (error) => {
+      // console.error(error)
+    })
+    
+    req.end()
   })
-
-  req.on('error', (error) => {
-    // console.error(error)
-  })
-
-  req.end()
-
 }
 
-function parseOrder(order, fetchImg) {
+//helper to pull the url from the api data based on variant id
+function getURLforID(id, apiData){
+  let url = apiData.find(o => o.number == id )
+  // console.log(url.images[0].url)
+  return (url.images[0].url)
+}
+
+async function parseOrder(order, fetchImg) {
+
+  // 1. GET LIST OF vartiant ids, aka the item_numbers from order.lines
+  let variantIDs = []
+  order.line_items.forEach(function (line){
+    variantIDs.push(line.variant_id)
+  })
+
+  // 3. const hydratedItems = await on Promise.all(Array<Promise<Item>>)
+  // 3.1 Create lookup function against hydratedItems, getItemImageUrl(item_number)... use Array.find...
+  const itemPromises = variantIDs.map(id => fetchImgFromFlow(id)) 
+  const items = await Promise.all(itemPromises);
+
   const currency = order.currency;
   const orderSummaryBody = {};
   const subtotal = {
@@ -92,18 +111,18 @@ function parseOrder(order, fetchImg) {
     },
     name: "tax",
   };
-  const duty = order.tax_lines.find(function(line) {
+  const duty = order.tax_lines.find(function (line) {
     return line.title == "Duty";
   });
-  const lines = order.line_items.map(function(line) {
-    const attributes = line.properties.map(function(property) {
+  const lines = order.line_items.map(function (line) {
+    const attributes = line.properties.map(function (property) {
       return {
         key: property.name,
         name: property.name,
         value: property.value,
       }
     });
-    const tax = line.tax_lines.find(function(taxLine) {
+    const tax = line.tax_lines.find(function (taxLine) {
       return taxLine.title.includes('Tax') || taxLine.title.includes('tax');
     });
 
@@ -111,7 +130,7 @@ function parseOrder(order, fetchImg) {
       item: {
         number: line.variant_id,
       },
-      name: line.name, 
+      name: line.name,
       attributes: attributes,
       quantity: line.quantity,
       unit: {
@@ -127,11 +146,11 @@ function parseOrder(order, fetchImg) {
         },
         discount: {
           amount: line.total_discount,
-          currency: currency, 
+          currency: currency,
           label: "$" + line.total_discount,
         },
         tax: {
-          rate: tax ? tax.rate : "", 
+          rate: tax ? tax.rate : "",
           value: {
             amount: tax ? tax.price : "",
             currency: currency,
@@ -152,24 +171,24 @@ function parseOrder(order, fetchImg) {
         },
         discount: {
           amount: line.total_discount,
-          currency: currency, 
+          currency: currency,
           label: "$" + line.total_discount,
         },
         tax: {
-          rate: tax ? tax.rate : "", 
+          rate: tax ? tax.rate : "",
           value: {
             amount: tax ? tax.price : "",
             currency: currency,
             label: tax ? "$" + tax.price : "",
           },
-        }
+        },
       },
       image: {
-        url : fetchImg
-      } 
+        url: getURLforID(line.variant_id, items)
+      }
     }
 
-    if(!tax) {
+    if (!tax) {
       delete lineData.unit.tax;
       delete lineData.line.tax;
     }
@@ -177,7 +196,7 @@ function parseOrder(order, fetchImg) {
     return lineData;
   });
 
-  if(duty) {
+  if (duty) {
     orderSummaryBody.duty = duty;
   }
 
