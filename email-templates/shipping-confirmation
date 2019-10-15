@@ -1,0 +1,550 @@
+{% layout none %}
+
+{% capture email_title %}Your order is on the way!{% endcapture %}
+{% capture email_body %}<i>May take up to 24 hours for your tracking link to activate.</i>{% endcapture %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title style="font-size: 23px !important">{{ email_title }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" type="text/css" href="/assets/notifications/styles.css">
+    <style>
+      .button__cell { background: {{ shop.email_accent_color }}; }
+      a, a:hover, a:active, a:visited { color: {{ shop.email_accent_color }}; font-size: 13px !important;}
+      span, strong, del, a, p {font-family: Helvetica, Arial, sans-serif; font-size: 13px;}
+      strong {color: #000;}
+      p {font-family: Helvetica, Arial, sans-serif; font-size: 13px !important; color: #000 !important; letter-spacing: 0.05em;  line-height: 180%;}
+      .container {width: 600px; text-align: left; margin: 0 auto;}
+      td {font-family: Helvetica, Arial, sans-serif; }
+      .container_new {width: 520px; text-align: left; margin: 0 auto;}
+      .button__text {padding: 13px 25px !important; text-transform: uppercase;}
+      .subtotal-line__title p {line-height: 150%;}
+      .subtotal-table--total .subtotal-line__value strong {font-size: 20px;}
+      .order-list__product-image {border-radius: 0;}
+      .customer-info-tem {width: 50%; padding-bottom: 40px;}
+      .fulfilled{display: none;}
+      @media (max-width: 600px) {
+        .container {width: 100% !important;}
+      }
+    </style>
+  </head>
+
+  <body>
+    <table class="body">
+      <tr>
+        <td>
+
+          <table class="header row" style="padding-bottom: 30px;">
+            <tr>
+              <td class="header__cell">
+                <center>
+
+                  <table class="container_new">
+                    <tr>
+                      <td>
+
+                        <table class="row">
+                          <tr>
+                            <td class="shop-name__cell">
+                              <center>
+                                <img src="{{ shop.email_logo_url }}" alt="{{ shop.name }}" width="{{ shop.email_logo_width }}" style="margin: auto;">
+                              </center>
+                            </td>
+                          </tr>
+                        </table>
+
+                      </td>
+                    </tr>
+                  </table>
+
+                </center>
+              </td>
+            </tr>
+          </table>
+
+          <table class="row content">
+            <tr>
+              <td class="content__cell">
+                <center>
+                  <table class="container">
+                    <tr>
+                      <td bgcolor="#000000" style="padding: 50px; padding-bottom: 0px; background: #000000;" >
+
+                        <h2 style="font-weight: bold; font-size: 21px; text-align: center; color: #fff !important; margin-bottom: 20px;">{{ email_title }}</h2>
+                        <p style=" color: #fff !important; text-align: center; margin-bottom: 25px; margin: 20px 0 0px;">
+                          {% if custom_message != blank %}
+                            {{ custom_message }}
+                          {% else %}
+                            {{ email_body }}
+                          {% endif %}
+                        </p>
+                        <table style="width: 80%; margin: auto;">
+                          <tr>
+                            <td>
+                              <table class="row actions" style="width: 94%; margin: auto;">
+                                <tr>
+                                  <td class="actions__cell">
+                                    <center>
+                                      <table class="button main-action-cell" style="width: 100%; float:none; margin-right: 0;">
+                                        <tr>
+{% for trackingUrl in fulfillment.tracking_urls %}
+<td class="button__cell" style="border-radius:0;"><a href="{{ trackingUrl | escape }}" class="button__text" style="font-size: 13px !important;  font-weight: bold !important; padding-bottom: 50px !important;">TRACK MY ORDER</a></td>
+
+{% endfor %}
+                                          
+                                        </tr>
+                                      </table>
+                                    </center>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+
+                      </td>
+                    </tr>
+                  </table>
+                </center>
+              </td>
+            </tr>
+          </table>
+
+          <table class="row section container_new" style="border-top: 0;">
+            <tr>
+              <td class="section__cell" style="padding-top: 10px; border-bottom: 1px solid #000; width: 40px;">
+                <table class="container_new">
+                  <tr>
+                    <td>
+
+                      <table class="row">
+                        <tr>
+                          {% if requires_shipping and shipping_address %}
+                          <td class="customer-info-item">
+                            <h4 style="font-size: 13px; font-weight: bold;">Shipping address</h4>
+                            <p>
+                              {{ shipping_address.name }}<br/>
+                              {{ shipping_address.address1 }}
+                              {% if shipping_address.address2 %}
+                              <br/>{{ shipping_address.address2 }}
+                              {% endif %}
+                              <br/>{{ shipping_address.city }}, {{ shipping_address.province }} {{ shipping_address.zip }}
+                              <br/>{{ shipping_address.country }}
+                            </p>
+
+                          </td>
+                          {% endif %}
+                          {% if billing_address %}
+                          <td class="customer-info-item">
+                            <h4 style="font-size: 13px; font-weight: bold;">Billing address</h4>
+                            <p>
+                              {{ billing_address.name }}<br/>
+                              {{ billing_address.address1 }}
+                              {% if billing_address.address2 %}
+                              <br/>{{ billing_address.address2 }}
+                              {% endif %}
+                              <br/>{{ billing_address.city }}, {{ billing_address.province }} {{ billing_address.zip }}
+                              <br/>{{ billing_address.country }}
+                            </p>
+
+                          </td>
+                          {% endif %}
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+
+          <table class="row section" style="border-top: 0 !important;">
+            <tr>
+              <td class="section__cell" style="padding-bottom: 20px;">
+                <center>
+                  <table class="container_new">
+                    <tr>
+                      <td>
+                        <h3 style="text-align: center; font-weight: bold;">ITEMS IN THIS SHIPMENT</h3>
+                      </td>
+                    </tr>
+                  </table>
+                  <table class="container_new" style="border: 1px solid #e5e5e5;">
+                    <tr>
+                      <td style="padding: 30px;">
+                        <table class="row">
+                          {% for line_item in fulfillment.fulfillment_line_items %}
+                          {% assign line = line_item.line_item %}
+                          {% if item_count == 1 %}
+                          {% assign columnWrapperClass = 'order-list__item--single' %}
+                          {% elsif forloop.first == true %}
+                          {% assign columnWrapperClass = 'order-list__item--first' %}
+                          {% elsif forloop.last == true %}
+                          {% assign columnWrapperClass = 'order-list__item--last' %}
+                          {% else %}
+                          {% assign columnWrapperClass = '' %}
+                          {% endif %}
+                          <tr class="order-list__item {{columnWrapperClass}}">
+                            <td class="order-list__item__cell">
+                              <table>
+                                <td>
+                                  {% if line.image %}
+                                  <img src="{{ line | img_url: 'compact_cropped' }}" align="left" width="100" height="100" class="order-list__product-image"/>
+                                  {% endif %}
+                                </td>
+                                <td class="order-list__product-description-cell">
+                                  {% if line.product.title %}
+                                  {% assign line_title = line.product.title %}
+                                  {% else %}
+                                  {% assign line_title = line.title %}
+                                  {% endif %}
+                                  <span class="order-list__item-title">{{ line.quantity }} x <a style="text-decoration: underline; text-transform: uppercase; color: #000 !important;" href="{{shop.url}}{{line.product.url}}" target="_blank">{{ line_title }}</a></span><br/>
+                                  {% if line.variant.title != 'Default Title' %}
+                                  <span class="order-list__item-variant"><span style="font-weight: normal !important;">{{ line.variant.title }}</span></span>
+                                  {% endif %}
+                                </td>
+                                <td class="order-list__price-cell">
+                                    {% unless line.properties.flow_line_total %}
+                                  {% if line.original_line_price != line.line_price %}
+                                  <del class="order-list__item-original-price">{{ line.original_line_price | money }}</del>
+                                  {% endif %}
+                                  {% endunless %}
+                                  {% if line.properties.flow_line_price %}
+                                  <p class="order-list__item-price">{{ line.properties.flow_line_price }}</p>
+                                  {% else %}
+                                  <p class="order-list__item-price">{{ line.line_price | money }}</p>
+                                  {% endif %}
+                                </td>
+                              </table>
+                            </td>
+                          </tr>{% endfor %}
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                  {% assign quantity1 = 0 %}
+                  {% assign quantity2 = 0 %}                  
+                  {% for line in line_items %}
+                    {% assign quantity1 = quantity1 | plus: line.quantity %}
+                  {% endfor %}
+                  {% for line_item in fulfillment.fulfillment_line_items %}
+                    {% assign line2 = line_item.line_item %}
+                    {% assign quantity2 = quantity2 | plus: line2.quantity %}
+                  {% endfor %} 
+
+                  {% if quantity1 != quantity2 %}
+                  <table class="container_new">
+                    <tr>
+                      <td>
+                        <h3 style="text-align: center; font-weight: bold; margin:25px 0; ">UNABLE TO SHIP THESE ITEMS</h3>
+                      </td>
+                    </tr>
+                  </table>   
+                  {% endif %}  
+
+                  {% for line in line_items %}
+
+                  {% assign fulfilled = false %}
+                  {% for line_item in fulfillment.fulfillment_line_items %}{% assign line2 = line_item.line_item %}{% if line.product.title == line2.product.title %}{% assign fulfilled = true %}{% endif %}{% endfor %}
+
+                  {% if fulfilled == false %}
+                  <table class="container_new" style="border: 1px solid #e5e5e5;">
+                    <tr>
+                      <td style="padding: 30px;">
+                        <table class="row">                          
+                          <tr class="order-list__item">                         
+                            <td class="order-list__item__cell">
+                              <table>
+                                <td>
+                                  {% if line.image %}
+                                  <img src="{{ line | img_url: 'compact_cropped' }}" align="left" width="100" height="100" class="order-list__product-image"/>
+                                  {% endif %}
+                                </td>
+                                <td class="order-list__product-description-cell">
+                                  {% if line.product.title %}
+                                  {% assign line_title = line.product.title %}
+                                  {% else %}
+                                  {% assign line_title = line.title %}
+                                  {% endif %}
+                                  <span class="order-list__item-title">{{ line.quantity }} x <a style="text-decoration: underline; text-transform: uppercase; color: #000 !important;" href="{{shop.url}}{{line.product.url}}" target="_blank">{{ line_title }}</a></span><br/>
+                                  {% if line.variant.title != 'Default Title' %}
+                                  <span class="order-list__item-variant"><span style="font-weight: normal !important;">{{ line.variant.title }}</span></span>
+                                  {% endif %}
+                                </td>
+                                <td class="order-list__price-cell">
+                                    {% unless line.properties.flow_line_total %}
+                                  {% if line.original_line_price != line.line_price %}
+                                  <del class="order-list__item-original-price">{{ line.original_line_price | money }}</del>
+                                  {% endif %}
+                                  {% endunless %}
+                                  {% if line.properties.flow_line_price %}
+                                  <p class="order-list__item-price">{{ line.properties.flow_line_price }}</p>
+                                  {% else %}
+                                  <p class="order-list__item-price">{{ line.line_price | money }}</p>
+                                  {% endif %}
+                                </td>
+                              </table>
+                            </td>                            
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                  {% endif %}
+                  {% endfor %}                                     
+                  <table class="container_new" style="border: 1px solid #e5e5e5;">
+                  {% if quantity1 != quantity2 %}
+                  <tr>
+                    <td style="padding: 25px; width: 100%; box-sizing: border-box; vertical-align: middle; font-size: 11px !important;">You will be credited for the item(s) listed above within 48 hours.<br/>A separate email will be sent with your refund receipt.</td>
+                  </tr>
+                   {% endif %}
+                  </table>
+                  <table class="container_new" style="border: 1px solid #e5e5e5; border-top: 0; background: #eaeaea;">
+                    <tr>
+                      <td style="padding: 25px; padding-right: 10px; width: 50%; box-sizing: border-box; vertical-align: top;">
+                        <p style="font-size: 11px !important; line-height: 150%; margin: 0;">If there are any issues with your order, please contact customer care <i>within 5 days of receipt</i>. Returns must be sent within 30 days of your order's original shipment date. For more information, check out our <a href="#" style="text-decoration: underline !important; font-weight: bold; font-size: 11px !important; color: #000 !important;">return policy</a> or email us at <a href="mailto:info@fashionnova.com"  style="text-decoration: underline !important; font-weight: bold; font-size: 11px !important; color: #000 !important;">info@fashionnova.com</a></p>
+                      </td>
+                      <td style="padding: 25px; padding-left: 10px; width: 50%; box-sizing: border-box;">
+
+                        <table class="row subtotal-lines" style="border: 0; margin: 0;">
+                          <tr>
+                            <td>
+                              <table class="row subtotal-table" style="border: 0; margin: 0;">
+                                {% if discounts %}
+                                {% capture discount_title %}Discount {% if discounts.first.code %}({{ discounts.first.code }}){% endif %}{% endcapture %}
+
+                                <tr class="subtotal-line">
+                                  <td class="subtotal-line__title">
+                                    <p>
+                                      <span>{{ discount_title }}</span>
+                                    </p>
+                                  </td>
+                                  <td class="subtotal-line__value">
+                                      {% if metafields.flow_order.discount %}
+                                      <strong>-{{ metafields.flow_order.discount }}</strong>
+                                      {% else %}
+                                    <strong>{{ discounts_savings | money }}</strong>
+                                    {% endif %}
+                                  </td>
+                                </tr>
+
+                                {% endif %}
+
+
+                                <tr class="subtotal-line">
+                                  <td class="subtotal-line__title">
+                                    <p>
+                                      <span>Subtotal</span>
+                                    </p>
+                                  </td>
+                                  <td class="subtotal-line__value">
+                                      {% if metafields.flow_order.subtotal %}
+                                      <strong>{{ metafields.flow_order.subtotal }}</strong>
+                                      {% else %}
+                                      <strong>{{ subtotal_price | money }}</strong>
+                                      {% endif %}
+                                  </td>
+                                </tr>
+
+
+                                <tr class="subtotal-line">
+                                  <td class="subtotal-line__title">
+                                    <p>
+                                      <span>Shipping</span>
+                                    </p>
+                                  </td>
+                                  <td class="subtotal-line__value">
+                                      {% if metafields.flow_order.shipping %}
+                                      <strong>{{ metafields.flow_order.shipping }}</strong>
+                                      {% else %}
+                                      <strong>{{ shipping_method.price | money }}</strong>
+                                      {% endif %}
+                                  </td>
+                                </tr>
+
+                                {% if metafields.flow_order.vat %}
+                                  <tr class="subtotal-line">
+                                      <td class="subtotal-line__title">
+                                        <p>
+                                          <span>{{ metafields.flow_order.tax_name }}</span>
+                                        </p>
+                                      </td>
+                                      <td class="subtotal-line__value">
+                                        <strong>{{ metafields.flow_order.vat }}</strong>
+                                      </td>
+                                    </tr>
+                                  {% endif %}
+                                  {% if metafields.flow_order.duty %}
+                                  <tr class="subtotal-line">
+                                      <td class="subtotal-line__title">
+                                        <p>
+                                          <span>Duty</span>
+                                        </p>
+                                      </td>
+                                      <td class="subtotal-line__value">
+                                        <strong>{{ metafields.flow_order.duty }}</strong>
+                                      </td>
+                                    </tr>
+                                  {% endif %}
+
+                                  {% unless metafields.flow_order.total %}
+                                {% for line in tax_lines %}
+
+                                <tr class="subtotal-line">
+                                  <td class="subtotal-line__title">
+                                    <p>
+                                      <span>{{ line.title }}</span>
+                                    </p>
+                                  </td>
+                                  <td class="subtotal-line__value">
+                                    <strong>{{ line.price | money }}</strong>
+                                  </td>
+                                </tr>
+
+                                {% endfor %}
+                                {% endunless %}
+                              </table>
+                              <table class="row subtotal-table subtotal-table--total" style="border-color: #ddd;">
+
+                                <tr class="subtotal-line">
+                                  <td class="subtotal-line__title">
+                                    <p>
+                                      <span><strong style="font-size: 18px !important;">Total</strong></span>
+                                    </p>
+                                  </td>
+                                  <td class="subtotal-line__value">
+                                      {% if metafields.flow_order.total %}
+                                      <strong style="font-size: 18px !important;">{{ metafields.flow_order.total }}</strong>
+                                      {% else %}
+                                      <strong style="font-size: 18px !important;">{{ total_price | money_with_currency }}</strong>
+                                      {% endif %}
+
+                                  </td>
+                                </tr>
+
+                              </table>
+
+                              {% assign transaction_size = 0 %}
+                              {% for transaction in transactions %}
+                              {% unless transaction.kind == "capture" or transaction.kind == "void" %}
+                              {% assign transaction_size = transaction_size | plus: 1 %}
+                              {% endunless %}
+                              {% endfor %}
+
+                              {% if transaction_size > 1 %}
+                              <table class="row subtotal-table">
+                                <tr><td colspan="2" class="subtotal-table__line"></td></tr>
+                                <tr><td colspan="2" class="subtotal-table__small-space"></td></tr>
+
+                                {% for transaction in transactions %}
+                                {% if (transaction.status == "success") and (transaction.kind == "authorization" or transaction.kind == "sale") %}
+                                {% if transaction.payment_details.credit_card_company %}
+                                {% capture transaction_name %}{{ transaction.payment_details.credit_card_company }} (ending in {{ transaction.payment_details.credit_card_last_four_digits }}){% endcapture %}
+                                {% else %}
+                                {% capture transaction_name %}{{ transaction.gateway | replace: "_", " " | capitalize }}{% endcapture %}
+                                {% endif %}
+
+
+                                <tr class="subtotal-line">
+                                  <td class="subtotal-line__title">
+                                    <p>
+                                      <span>{{transaction_name}}</span>
+                                    </p>
+                                  </td>
+                                  <td class="subtotal-line__value">
+                                    <strong>{{ transaction.amount | money }}</strong>
+                                  </td>
+                                </tr>
+
+                                {% endif %}
+                                {% if transaction.kind == 'refund' %}
+                                {% if transaction.payment_details.credit_card_company %}
+                                {% assign refund_method_title = transaction.payment_details.credit_card_company %}
+                                {% else %}
+                                {% assign refund_method_title = transaction.gateway %}
+                                {% endif %}
+
+
+                                <tr class="subtotal-line">
+                                  <td class="subtotal-line__title">
+                                    <p>
+                                      <span>Refund</span>
+                                      <br>
+                                      <small>{{ refund_method_title | capitalize }}</small>
+                                    </p>
+                                  </td>
+                                  <td class="subtotal-line__value">
+                                    <strong>- {{ transaction.amount | money }}</strong>
+                                  </td>
+                                </tr>
+
+                                {% endif %}
+                                {% endfor %}
+                              </table>
+                              {% endif %}
+                            </td>
+                          </tr>
+                        </table>
+
+
+                      </td>
+                    </tr>
+                  </table>
+                </center>
+              </td>
+            </tr>
+          </table>
+
+          <table class="row footer container_new" style="border: 0;">
+            <tr>
+              <td class="footer__cell" style="">
+                <center>
+                  <table class="">
+                    <tr>
+                      <td>
+                        <p style="text-align: center; font-weight: bold; margin-top: 0;"><a href="mailto:info@fashionnova.com" style="color: #000 !important; font-size: 16px !important; "><img style="width: 22px;" src="https://cdn.shopify.com/s/files/1/0893/6878/files/email-icon.png?13759731729156508998"/>info@fashionnova.com</a></p>
+{% comment %}
+                        <p style="text-align: center; font-weight: bold; margin-top: 20px;"><img style="width: 22px;" src="https://cdn.shopify.com/s/files/1/0893/6878/files/email-phone-icon.png?13759731729156508998"/> 1.800.866.0286</p>
+{% endcomment %}
+                      </td>
+                    </tr>
+                  </table>
+                </center>
+              </td>
+            </tr>
+          </table>
+
+          <table class="row container">
+            <tr>
+              <td bgcolor="#000000" align="center" style="background-color: #000000; padding-top: 30px; padding-bottom: 35px;">
+                <center>
+                  <a href="https://www.instagram.com/fashionnova/" style="text-decoration: none !important;">
+                    <img src="https://cdn.shopify.com/s/files/1/0893/6878/files/mail-instagram.png?8445550060505855440" alt="instagram" title="instagram" style="width: 44px; margin: 0 5px;" width="44" />
+                  </a>
+                  <a href="https://es.pinterest.com/fashionnova/" style="text-decoration: none !important;">
+                    <img src="https://cdn.shopify.com/s/files/1/0893/6878/files/mail-pinterest.png?8445550060505855440" alt="pinterest" title="pinterest" style="width: 44px; margin: 0 5px;" width="44" />
+                  </a>
+                  <a href="https://www.facebook.com/FashionNova" style="text-decoration: none !important;">
+                    <img src="https://cdn.shopify.com/s/files/1/0893/6878/files/mail-facebook.png?8445550060505855440" alt="facebook" title="facebook" style="width: 44px; margin: 0 5px;" width="44" />
+                  </a>
+                  <a href="https://twitter.com/fashionnova" style="text-decoration: none !important;">
+                    <img src="https://cdn.shopify.com/s/files/1/0893/6878/files/mail-twitter.png?8445550060505855440" alt="twitter" title="twitter" style="width: 44px; margin: 0 5px;" width="44" />
+                  </a>
+                  <a href="https://www.snapchat.com/add/fashionnova" style="text-decoration: none !important;">
+                    <img src="https://cdn.shopify.com/s/files/1/0893/6878/files/mail-snapchat.png?8445550060505855440" alt="snapchat" title="snapchat" style="width: 44px; margin: 0 5px;" width="44" />
+                  </a>
+                </center>
+              </td>
+            </tr>
+          </table>
+
+          <img src="{{ 'notifications/spacer.png' | shopify_asset_url }}" class="spacer" height="1" />
+
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
