@@ -17,7 +17,6 @@ const path = require('path');
 const inputDirName = 'samples';
 const orderFilesDirectory = path.resolve(__dirname, inputDirName);
 
-
 /**
  * Takes a Shopify variant IDs and returns Flow Items. These are used to retrieve additional 
  * information such as images, which is required for the Order Summary object. 
@@ -34,10 +33,9 @@ function getFlowItemFromVariant(variant_ids) {
     const q = variant_ids.map(function (x) {
       `number=${x}`
     }).join('&')
-
     const options = {
       host: "api.flow.io",
-      path: `/playground/catalog/items?${q}`,
+      path: `/playground/catalog/items?${q}&limit=${variant_ids.length}`,
       method: "GET",
       json: true,
       resolveWithFullResponse: true,
