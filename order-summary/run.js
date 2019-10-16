@@ -16,7 +16,6 @@ const path = require('path');
 /** "Samples" is the directory containing the input JSON files. Directory read from can be changed here. */
 const orderFilesDirectory = path.resolve(__dirname, 'samples');
 
-
 /**
  * Takes a Shopify variant ID and returns a a Flow item. This item is used to retrieve additional 
  * information such as images, which is required for the Order Summary object. 
