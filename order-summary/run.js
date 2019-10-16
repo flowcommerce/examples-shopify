@@ -33,6 +33,7 @@ function getFlowItemFromVariant(variant_ids) {
     const q = variant_ids.map(function (x) {
       `number=${x}`
     }).join('&')
+
     const options = {
       host: "api.flow.io",
       path: `/playground/catalog/items?${q}&limit=${variant_ids.length}`,
