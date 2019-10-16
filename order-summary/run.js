@@ -1,5 +1,6 @@
 /**
- *  @fileOverview Parses Shopify order webhook response JSON and converts to Flow Order Summary
+ *  @fileOverview Reads Shopify Order webhook response JSON files from the filesystem, converts them to
+ *  Flow `OrderSummary` objects from the Flow API and writes the data back into separate JSON files.
  *
  *  @author       Matt Kersner
  *  @author       John Bell
@@ -17,12 +18,16 @@ const orderFilesDirectory = path.resolve(__dirname, 'samples');
 
 
 /**
- * Takes a variant_id and returns an object from Flow's API
+ * Takes a Shopify variant ID and returns a a Flow item. This item is used to retrieve additional 
+ * information such as images, which is required for the Order Summary object. 
+ * We provide an implementation which retrieves this data from api.flow.io, however it can be 
+ * customized to suit your needs. The only requirement is that it returns an `Item` model from Flow.
+ * 
  * @param {number} variant_id 
  * 
  * @returns {object} JSON data of requested variant
  */
-function fetchImgFromFlow(variant_id) {
+function getFlowItemFromVariant(variant_id) {
   return new Promise((resolve, rej) => {
     const flowAPIKey = "HlGgfflLamiTQJ"
     const options = {
@@ -66,7 +71,7 @@ fs.readdir("./samples", function (err, files) {
     let rawdata = fs.readFileSync(`${orderFilesDirectory}/${file}`);
     let order = JSON.parse(rawdata);
     const completedOrder = await parseOrder(order)
-    let data = JSON.stringify(completedOrder, fetchImgFromFlow());
+    let data = JSON.stringify(completedOrder, getFlowItemFromVariant());
     fs.writeFileSync(`./output/${file}`, data);
   });
 });
@@ -84,7 +89,7 @@ async function parseOrder(order, fetchImg) {
     variantIDs.push(line.variant_id)
   })
 
-  const itemPromises = variantIDs.map(id => fetchImgFromFlow(id)) 
+  const itemPromises = variantIDs.map(id => getFlowItemFromVariant(id)) 
   const items = await Promise.all(itemPromises);
   const currency = order.currency;
   const orderSummaryBody = {};
