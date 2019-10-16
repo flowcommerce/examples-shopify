@@ -1,26 +1,96 @@
-const fs = require('fs');
-var path = require('path');
+/**
+ *  @fileOverview Reads Shopify Order webhook response JSON files from the filesystem, converts them to
+ *  Flow `OrderSummary` objects from the Flow API and writes the data back into separate JSON files.
+ *
+ *  @author       Matt Kersner
+ *  @author       John Bell
+ *
+ *  @requires     Node 11+
+ *  @requires     Flow API key
+ */
 
-// Loop through all the files in the temp directory
+const fs = require('fs');
+const https = require('https');
+const path = require('path');
+
+/** "Samples" is the directory containing the input JSON files. Directory read from can be changed here. */
+const orderFilesDirectory = path.resolve(__dirname, 'samples');
+
+
+/**
+ * Takes a Shopify variant ID and returns a a Flow item. This item is used to retrieve additional 
+ * information such as images, which is required for the Order Summary object. 
+ * We provide an implementation which retrieves this data from api.flow.io, however it can be 
+ * customized to suit your needs. The only requirement is that it returns an `Item` model from Flow.
+ * 
+ * @param {number} variant_id 
+ * 
+ * @returns {object} JSON data of requested variant
+ */
+function getFlowItemFromVariant(variant_id) {
+  return new Promise((resolve, rej) => {
+    const flowAPIKey = "HlGgfflLamiTQJ"
+    const options = {
+      host: "api.flow.io",
+      path: `/playground/catalog/items?number=${variant_id}`,
+      method: "GET",
+      headers: {
+        "Authorization": "Basic " + new Buffer(flowAPIKey + ":").toString("base64"),
+      }
+    }
+
+    const req = https.request(options, (res) => {
+      res.on('data', (d) => {
+        d = d.toString('utf8')
+        d = JSON.parse(d)
+        resolve(d[0])
+      })
+    })
+    req.on('error', (error) => {
+      console.error(error)
+    })
+    req.end()
+  })
+}
+
+/**
+ *  There is no reason
+ *  to edit any code 
+ *  beyond this comment.
+ */
+
+/** Loop through all the files in the input directory and parse order. */
 fs.readdir("./samples", function (err, files) {
   if (err) {
     console.error("Could not list the directory.", err);
     process.exit(1);
   }
 
-  files.forEach(function (file, index) {
-    console.log('FILE ===>', file, index);
-    let rawdata = fs.readFileSync(`./samples/${file}`);
+  files.forEach(async function (file, index) {
+    console.log('FILE OUTPUT ===>', file);
+    let rawdata = fs.readFileSync(`${orderFilesDirectory}/${file}`);
     let order = JSON.parse(rawdata);
-
-    let data = JSON.stringify(parseOrder(order));
+    const completedOrder = await parseOrder(order)
+    let data = JSON.stringify(completedOrder, getFlowItemFromVariant());
     fs.writeFileSync(`./output/${file}`, data);
   });
 });
 
+/** Helper to pull the url from the api data based on variant id */
+function getURLforID(id, apiData){
+  let url = apiData.find(o => o.number == id )
+  return (url.images[0].url)
+}
 
+/** Parses Shopify webhook response JSON into Flow order summary */
+async function parseOrder(order, fetchImg) {
+  let variantIDs = []
+  order.line_items.forEach(function (line){
+    variantIDs.push(line.variant_id)
+  })
 
-function parseOrder(order) {
+  const itemPromises = variantIDs.map(id => getFlowItemFromVariant(id)) 
+  const items = await Promise.all(itemPromises);
   const currency = order.currency;
   const orderSummaryBody = {};
   const subtotal = {
@@ -63,18 +133,18 @@ function parseOrder(order) {
     },
     name: "tax",
   };
-  const duty = order.tax_lines.find(function(line) {
+  const duty = order.tax_lines.find(function (line) {
     return line.title == "Duty";
   });
-  const lines = order.line_items.map(function(line) {
-    const attributes = line.properties.map(function(property) {
+  const lines = order.line_items.map(function (line) {
+    const attributes = line.properties.map(function (property) {
       return {
         key: property.name,
         name: property.name,
         value: property.value,
       }
     });
-    const tax = line.tax_lines.find(function(taxLine) {
+    const tax = line.tax_lines.find(function (taxLine) {
       return taxLine.title.includes('Tax') || taxLine.title.includes('tax');
     });
 
@@ -82,7 +152,7 @@ function parseOrder(order) {
       item: {
         number: line.variant_id,
       },
-      name: line.name, 
+      name: line.name,
       attributes: attributes,
       quantity: line.quantity,
       unit: {
@@ -98,11 +168,11 @@ function parseOrder(order) {
         },
         discount: {
           amount: line.total_discount,
-          currency: currency, 
+          currency: currency,
           label: "$" + line.total_discount,
         },
         tax: {
-          rate: tax ? tax.rate : "", 
+          rate: tax ? tax.rate : "",
           value: {
             amount: tax ? tax.price : "",
             currency: currency,
@@ -123,21 +193,24 @@ function parseOrder(order) {
         },
         discount: {
           amount: line.total_discount,
-          currency: currency, 
+          currency: currency,
           label: "$" + line.total_discount,
         },
         tax: {
-          rate: tax ? tax.rate : "", 
+          rate: tax ? tax.rate : "",
           value: {
             amount: tax ? tax.price : "",
             currency: currency,
             label: tax ? "$" + tax.price : "",
           },
-        }
-      } 
+        },
+      },
+      image: {
+        url: getURLforID(line.variant_id, items)
+      }
     }
 
-    if(!tax) {
+    if (!tax) {
       delete lineData.unit.tax;
       delete lineData.line.tax;
     }
@@ -145,17 +218,9 @@ function parseOrder(order) {
     return lineData;
   });
 
-  if(duty) {
+  if (duty) {
     orderSummaryBody.duty = duty;
   }
-
-  // if(insurance) {
-  //   orderSummaryBody.insurance = insurance;
-  // }
-
-  // if(surcharges) {
-  //   orderSummaryBody.surcharges = surcharges;
-  // }
 
   orderSummaryBody.shipping = shipping;
   orderSummaryBody.subtotal = subtotal;
