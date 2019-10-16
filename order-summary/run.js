@@ -44,6 +44,7 @@ function getFlowItemFromVariant(variant_id) {
       res.on('data', (d) => {
         d = d.toString('utf8')
         d = JSON.parse(d)
+        
         resolve(d[0])
       })
     })
@@ -79,8 +80,21 @@ fs.readdir("./samples", function (err, files) {
 
 /** Helper to pull the url from the api data based on variant id */
 function getURLforID(id, apiData) {
-  let url = apiData.find(o => o.number == id)
-  return (url.images[0].url)
+  const currentItem = apiData.find(o => o.number == id)
+  let url
+  if (currentItem){
+    const firstImage = currentItem.images[0]
+    const imageWithCheckoutTag = currentItem.images.find(function(image){
+      return image.tags.includes('checkout')
+    })
+
+    if (imageWithCheckoutTag){
+      url = imageWithCheckoutTag.url
+    }else{
+      url = firstImage.url
+    }
+  }
+  return url 
 }
 
 /** Parses Shopify webhook response JSON into Flow order summary */
@@ -89,9 +103,10 @@ async function parseOrder(order, fetchImg) {
   order.line_items.forEach(function (line) {
     variantIDs.push(line.variant_id)
   })
-
+  
   const itemPromises = variantIDs.map(id => getFlowItemFromVariant(id))
   const items = await Promise.all(itemPromises);
+
   const currency = order.currency;
   const orderSummaryBody = {};
   const subtotal = {
