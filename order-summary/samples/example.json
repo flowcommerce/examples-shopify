@@ -53,10 +53,8 @@
       "title": "Discount"
     }
   ],
-  "discount_codes": [
-  ],
-  "note_attributes": [
-  ],
+  "discount_codes": [],
+  "note_attributes": [],
   "payment_gateway_names": [
     "visa",
     "bogus"
@@ -71,31 +69,31 @@
       "rate": 0.04,
       "title": "NY State Tax",
       "price_set": {
-      "shop_money": {
-      "amount": "19.20",
-      "currency_code": "USD"
-      },
-      "presentment_money": {
-      "amount": "19.20",
-      "currency_code": "USD"
+        "shop_money": {
+          "amount": "19.20",
+          "currency_code": "USD"
+        },
+        "presentment_money": {
+          "amount": "19.20",
+          "currency_code": "USD"
+        }
       }
-      }
-      },
-      {
+    },
+    {
       "price": "19.20",
       "rate": 0.04,
       "title": "Monroe County Tax",
       "price_set": {
-      "shop_money": {
-      "amount": "19.20",
-      "currency_code": "USD"
-      },
-      "presentment_money": {
-      "amount": "19.20",
-      "currency_code": "USD"
+        "shop_money": {
+          "amount": "19.20",
+          "currency_code": "USD"
+        },
+        "presentment_money": {
+          "amount": "19.20",
+          "currency_code": "USD"
+        }
       }
-      }
-      }
+    }
   ],
   "tags": "",
   "contact_email": "jon@doe.ca",
@@ -177,8 +175,7 @@
       "gift_card": false,
       "name": "IPod Nano - 8GB",
       "variant_inventory_management": "shopify",
-      "properties": [
-      ],
+      "properties": [],
       "product_exists": true,
       "fulfillable_quantity": 1,
       "grams": 567,
@@ -205,39 +202,38 @@
           "currency_code": "USD"
         }
       },
-      "discount_allocations": [
-      ],
+      "discount_allocations": [],
       "tax_lines": [
         {
           "price": "19.20",
           "rate": 0.04,
           "title": "NY State Tax",
           "price_set": {
-          "shop_money": {
-          "amount": "19.20",
-          "currency_code": "USD"
-          },
-          "presentment_money": {
-          "amount": "19.20",
-          "currency_code": "USD"
+            "shop_money": {
+              "amount": "19.20",
+              "currency_code": "USD"
+            },
+            "presentment_money": {
+              "amount": "19.20",
+              "currency_code": "USD"
+            }
           }
-          }
-          },
-          {
+        },
+        {
           "price": "19.20",
           "rate": 0.04,
           "title": "Monroe County Tax",
           "price_set": {
-          "shop_money": {
-          "amount": "19.20",
-          "currency_code": "USD"
-          },
-          "presentment_money": {
-          "amount": "19.20",
-          "currency_code": "USD"
+            "shop_money": {
+              "amount": "19.20",
+              "currency_code": "USD"
+            },
+            "presentment_money": {
+              "amount": "19.20",
+              "currency_code": "USD"
+            }
           }
-          }
-          }
+        }
       ]
     },
     {
@@ -255,8 +251,7 @@
       "gift_card": false,
       "name": "IPod Nano - 8GB",
       "variant_inventory_management": "shopify",
-      "properties": [
-      ],
+      "properties": [],
       "product_exists": true,
       "fulfillable_quantity": 1,
       "grams": 567,
@@ -305,31 +300,31 @@
           "rate": 0.04,
           "title": "NY State Tax",
           "price_set": {
-          "shop_money": {
-          "amount": "19.20",
-          "currency_code": "USD"
-          },
-          "presentment_money": {
-          "amount": "19.20",
-          "currency_code": "USD"
+            "shop_money": {
+              "amount": "19.20",
+              "currency_code": "USD"
+            },
+            "presentment_money": {
+              "amount": "19.20",
+              "currency_code": "USD"
+            }
           }
-          }
-          },
-          {
+        },
+        {
           "price": "19.20",
           "rate": 0.04,
           "title": "Monroe County Tax",
           "price_set": {
-          "shop_money": {
-          "amount": "19.20",
-          "currency_code": "USD"
-          },
-          "presentment_money": {
-          "amount": "19.20",
-          "currency_code": "USD"
+            "shop_money": {
+              "amount": "19.20",
+              "currency_code": "USD"
+            },
+            "presentment_money": {
+              "amount": "19.20",
+              "currency_code": "USD"
+            }
           }
-          }
-          }
+        }
       ]
     }
   ],
@@ -365,10 +360,8 @@
           "currency_code": "USD"
         }
       },
-      "discount_allocations": [
-      ],
-      "tax_lines": [
-      ]
+      "discount_allocations": [],
+      "tax_lines": []
     }
   ],
   "billing_address": {
@@ -405,10 +398,8 @@
     "country_code": "US",
     "province_code": "KY"
   },
-  "fulfillments": [
-  ],
-  "refunds": [
-  ],
+  "fulfillments": [],
+  "refunds": [],
   "customer": {
     "id": 115310627314723954,
     "email": "john@test.com",

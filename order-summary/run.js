@@ -14,41 +14,50 @@ const https = require('https');
 const path = require('path');
 
 /** "Samples" is the directory containing the input JSON files. Directory read from can be changed here. */
-const inputDirName = 'samples'
+const inputDirName = 'samples';
 const orderFilesDirectory = path.resolve(__dirname, inputDirName);
 
 
 /**
- * Takes a Shopify variant ID and returns a a Flow item. This item is used to retrieve additional 
+ * Takes a Shopify variant IDs and returns Flow Items. These are used to retrieve additional 
  * information such as images, which is required for the Order Summary object. 
  * We provide an implementation which retrieves this data from api.flow.io, however it can be 
  * customized to suit your needs. The only requirement is that it returns an `Item` model from Flow.
  * 
- * @param {number} variant_id 
+ * @param {number} variant_ids 
  * 
  * @returns {object} JSON data of requested variant
  */
-function getFlowItemFromVariant(variant_id) {
+function getFlowItemFromVariant(variant_ids) {
   return new Promise((resolve, rej) => {
     const flowAPIKey = "HlGgfflLamiTQJ"
+    const q = variant_ids.map(function (x) {
+      `number=${x}`
+    }).join('&')
+
     const options = {
       host: "api.flow.io",
-      path: `/playground/catalog/items?number=${variant_id}`,
+      path: `/playground/catalog/items?${q}`,
       method: "GET",
+      json: true,
+      resolveWithFullResponse: true,
       headers: {
         "Authorization": "Basic " + new Buffer(flowAPIKey + ":").toString("base64"),
       }
     }
 
     const req = https.request(options, (res) => {
-      res.on('data', (d) => {
-        d = d.toString('utf8')
-        d = JSON.parse(d)
-        resolve(d[0])
+      let responseJson = '';
+      res.on('data', (chunk) => {
+        responseJson += chunk;
       })
+
+      res.on('end', () => {
+        resolve(JSON.parse(responseJson));
+      });
     })
     req.on('error', (error) => {
-      console.error(error)
+      console.error(error);
     })
     req.end()
   })
@@ -71,27 +80,37 @@ fs.readdir("./samples", function (err, files) {
     console.log(`Reading ${inputDirName}/${file} ===> output/${file}`)
     let rawdata = fs.readFileSync(`${orderFilesDirectory}/${file}`);
     let order = JSON.parse(rawdata);
-    const completedOrder = await parseOrder(order)
-    let data = JSON.stringify(completedOrder, getFlowItemFromVariant());
+    const completedOrder = await parseOrder(order, getFlowItemFromVariant)
+    let data = JSON.stringify(completedOrder);
     fs.writeFileSync(`./output/${file}`, data);
   });
 });
 
 /** Helper to pull the url from the api data based on variant id */
 function getURLforID(id, apiData) {
-  let url = apiData.find(o => o.number == id)
-  return (url.images[0].url)
+  const currentItem = apiData.find(o => o.number == id)
+  let url
+  if (currentItem){
+    const imageWithCheckoutTag = currentItem.images.find(function(image){
+      return image.tags.includes('checkout');
+    })
+
+    if (imageWithCheckoutTag){
+      url = imageWithCheckoutTag.url;
+    } else {
+      const firstImage = currentItem.images[0]
+      if (firstImage){
+        url = firstImage.url;
+      }
+    }
+  }
+  return url 
 }
 
 /** Parses Shopify webhook response JSON into Flow order summary */
-async function parseOrder(order, fetchImg) {
-  let variantIDs = []
-  order.line_items.forEach(function (line) {
-    variantIDs.push(line.variant_id)
-  })
-
-  const itemPromises = variantIDs.map(id => getFlowItemFromVariant(id))
-  const items = await Promise.all(itemPromises);
+async function parseOrder(order, fnVariantToFlowItem) {
+  const variantIDs = order.line_items.map(line => line.variant_id);
+  const items = await fnVariantToFlowItem(variantIDs);
   const currency = order.currency;
   const orderSummaryBody = {};
   const subtotal = {
