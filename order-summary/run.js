@@ -1,27 +1,29 @@
+/**
+ *  @fileOverview Parses Shopify order webhook response JSON and converts to Flow Order Summary
+ *
+ *  @author       Matt Kersner
+ *  @author       John Bell
+ *
+ *  @requires     Node 11+
+ *  @requires     Flow API key
+ */
+
 const fs = require('fs');
 const https = require('https');
-var path = require('path');
+const path = require('path');
 
-// Loop through all the files in the temp directory
-fs.readdir("./samples", function (err, files) {
-  if (err) {
-    console.error("Could not list the directory.", err);
-    process.exit(1);
-  }
+/** "Samples" is the directory containing the input JSON files. Directory read from can be changed here. */
+const orderFilesDirectory = path.resolve(__dirname, 'samples');
 
-  files.forEach(async function (file, index) {
-    console.log('FILE ===>', file, index);
-    let rawdata = fs.readFileSync(`./samples/${file}`);
-    let order = JSON.parse(rawdata);
-    const completedOrder = await parseOrder(order)
-    let data = JSON.stringify(completedOrder, fetchImgFromFlow());
-    fs.writeFileSync(`./output/${file}`, data);
-  });
-});
 
+/**
+ * Takes a variant_id and returns an object from Flow's API
+ * @param {number} variant_id 
+ * 
+ * @returns {object} JSON data of requested variant
+ */
 function fetchImgFromFlow(variant_id) {
-  // console.log(variant_id)
-  return new Promise ((resolve,rej)=> {
+  return new Promise((resolve, rej) => {
     const flowAPIKey = "HlGgfflLamiTQJ"
     const options = {
       host: "api.flow.io",
@@ -31,44 +33,59 @@ function fetchImgFromFlow(variant_id) {
         "Authorization": "Basic " + new Buffer(flowAPIKey + ":").toString("base64"),
       }
     }
-    
+
     const req = https.request(options, (res) => {
-      
       res.on('data', (d) => {
         d = d.toString('utf8')
         d = JSON.parse(d)
         resolve(d[0])
       })
     })
-    
     req.on('error', (error) => {
-      // console.error(error)
+      console.error(error)
     })
-    
     req.end()
   })
 }
 
-//helper to pull the url from the api data based on variant id
+/**
+ *  There is no reason
+ *  to edit any code 
+ *  beyond this comment.
+ */
+
+/** Loop through all the files in the input directory and parse order. */
+fs.readdir("./samples", function (err, files) {
+  if (err) {
+    console.error("Could not list the directory.", err);
+    process.exit(1);
+  }
+
+  files.forEach(async function (file, index) {
+    console.log('FILE OUTPUT ===>', file);
+    let rawdata = fs.readFileSync(`${orderFilesDirectory}/${file}`);
+    let order = JSON.parse(rawdata);
+    const completedOrder = await parseOrder(order)
+    let data = JSON.stringify(completedOrder, fetchImgFromFlow());
+    fs.writeFileSync(`./output/${file}`, data);
+  });
+});
+
+/** Helper to pull the url from the api data based on variant id */
 function getURLforID(id, apiData){
   let url = apiData.find(o => o.number == id )
-  // console.log(url.images[0].url)
   return (url.images[0].url)
 }
 
+/** Parses Shopify webhook response JSON into Flow order summary */
 async function parseOrder(order, fetchImg) {
-
-  // 1. GET LIST OF vartiant ids, aka the item_numbers from order.lines
   let variantIDs = []
   order.line_items.forEach(function (line){
     variantIDs.push(line.variant_id)
   })
 
-  // 3. const hydratedItems = await on Promise.all(Array<Promise<Item>>)
-  // 3.1 Create lookup function against hydratedItems, getItemImageUrl(item_number)... use Array.find...
   const itemPromises = variantIDs.map(id => fetchImgFromFlow(id)) 
   const items = await Promise.all(itemPromises);
-
   const currency = order.currency;
   const orderSummaryBody = {};
   const subtotal = {
@@ -199,14 +216,6 @@ async function parseOrder(order, fetchImg) {
   if (duty) {
     orderSummaryBody.duty = duty;
   }
-
-  // if(insurance) {
-  //   orderSummaryBody.insurance = insurance;
-  // }
-
-  // if(surcharges) {
-  //   orderSummaryBody.surcharges = surcharges;
-  // }
 
   orderSummaryBody.shipping = shipping;
   orderSummaryBody.subtotal = subtotal;
