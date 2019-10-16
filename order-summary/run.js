@@ -28,28 +28,36 @@ const orderFilesDirectory = path.resolve(__dirname, inputDirName);
  * 
  * @returns {object} JSON data of requested variant
  */
-function getFlowItemFromVariant(variant_id) {
+function getFlowItemFromVariant(variant_ids) {
   return new Promise((resolve, rej) => {
     const flowAPIKey = "HlGgfflLamiTQJ"
+    const q = variant_ids.map(function (x) {
+      `number=${x}`
+    }).join('&')
+
     const options = {
       host: "api.flow.io",
-      path: `/playground/catalog/items?number=${variant_id}`,
+      path: `/playground/catalog/items?${q}`,
       method: "GET",
+      json: true,
+      resolveWithFullResponse: true,
       headers: {
         "Authorization": "Basic " + new Buffer(flowAPIKey + ":").toString("base64"),
       }
     }
 
     const req = https.request(options, (res) => {
-      res.on('data', (d) => {
-        d = d.toString('utf8')
-        d = JSON.parse(d)
-        
-        resolve(d[0])
+      let responseJson = '';
+      res.on('data', (chunk) => {
+        responseJson += chunk;
       })
+
+      res.on('end', () => {
+        resolve(JSON.parse(responseJson));
+      });
     })
     req.on('error', (error) => {
-      console.error(error)
+      console.error(error);
     })
     req.end()
   })
@@ -72,8 +80,8 @@ fs.readdir("./samples", function (err, files) {
     console.log(`Reading ${inputDirName}/${file} ===> output/${file}`)
     let rawdata = fs.readFileSync(`${orderFilesDirectory}/${file}`);
     let order = JSON.parse(rawdata);
-    const completedOrder = await parseOrder(order)
-    let data = JSON.stringify(completedOrder, getFlowItemFromVariant());
+    const completedOrder = await parseOrder(order, getFlowItemFromVariant)
+    let data = JSON.stringify(completedOrder);
     fs.writeFileSync(`./output/${file}`, data);
   });
 });
@@ -85,28 +93,22 @@ function getURLforID(id, apiData) {
   if (currentItem){
     const firstImage = currentItem.images[0]
     const imageWithCheckoutTag = currentItem.images.find(function(image){
-      return image.tags.includes('checkout')
+      return image.tags.includes('checkout');
     })
 
     if (imageWithCheckoutTag){
-      url = imageWithCheckoutTag.url
+      url = imageWithCheckoutTag.url;
     }else{
-      url = firstImage.url
+      url = firstImage.url;
     }
   }
   return url 
 }
 
 /** Parses Shopify webhook response JSON into Flow order summary */
-async function parseOrder(order, fetchImg) {
-  let variantIDs = []
-  order.line_items.forEach(function (line) {
-    variantIDs.push(line.variant_id)
-  })
-  
-  const itemPromises = variantIDs.map(id => getFlowItemFromVariant(id))
-  const items = await Promise.all(itemPromises);
-
+async function parseOrder(order, fnVariantToFlowItem) {
+  const variantIDs = order.line_items.map(line => line.variant_id);
+  const items = await fnVariantToFlowItem(variantIDs);
   const currency = order.currency;
   const orderSummaryBody = {};
   const subtotal = {
