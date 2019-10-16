@@ -14,7 +14,9 @@ const https = require('https');
 const path = require('path');
 
 /** "Samples" is the directory containing the input JSON files. Directory read from can be changed here. */
-const orderFilesDirectory = path.resolve(__dirname, 'samples');
+const inputDirName = 'samples'
+const orderFilesDirectory = path.resolve(__dirname, inputDirName);
+
 
 /**
  * Takes a Shopify variant ID and returns a a Flow item. This item is used to retrieve additional 
@@ -66,7 +68,7 @@ fs.readdir("./samples", function (err, files) {
   }
 
   files.forEach(async function (file, index) {
-    console.log('FILE OUTPUT ===>', file);
+    console.log(`Reading ${inputDirName}/${file} ===> output/${file}`)
     let rawdata = fs.readFileSync(`${orderFilesDirectory}/${file}`);
     let order = JSON.parse(rawdata);
     const completedOrder = await parseOrder(order)
@@ -76,19 +78,19 @@ fs.readdir("./samples", function (err, files) {
 });
 
 /** Helper to pull the url from the api data based on variant id */
-function getURLforID(id, apiData){
-  let url = apiData.find(o => o.number == id )
+function getURLforID(id, apiData) {
+  let url = apiData.find(o => o.number == id)
   return (url.images[0].url)
 }
 
 /** Parses Shopify webhook response JSON into Flow order summary */
 async function parseOrder(order, fetchImg) {
   let variantIDs = []
-  order.line_items.forEach(function (line){
+  order.line_items.forEach(function (line) {
     variantIDs.push(line.variant_id)
   })
 
-  const itemPromises = variantIDs.map(id => getFlowItemFromVariant(id)) 
+  const itemPromises = variantIDs.map(id => getFlowItemFromVariant(id))
   const items = await Promise.all(itemPromises);
   const currency = order.currency;
   const orderSummaryBody = {};
