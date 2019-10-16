@@ -297,7 +297,7 @@
 </tr>
 
         {% endfor %}
-{% unless %}
+{% endunless %}
 
         {% if total_tip and total_tip > 0 %}
           
