@@ -14,17 +14,17 @@ const https = require('https');
 const path = require('path');
 
 /** "Samples" is the directory containing the input JSON files. Directory read from can be changed here. */
-const inputDirName = 'samples'
+const inputDirName = 'samples';
 const orderFilesDirectory = path.resolve(__dirname, inputDirName);
 
 
 /**
- * Takes a Shopify variant ID and returns a a Flow item. This item is used to retrieve additional 
+ * Takes a Shopify variant IDs and returns Flow Items. These are used to retrieve additional 
  * information such as images, which is required for the Order Summary object. 
  * We provide an implementation which retrieves this data from api.flow.io, however it can be 
  * customized to suit your needs. The only requirement is that it returns an `Item` model from Flow.
  * 
- * @param {number} variant_id 
+ * @param {number} variant_ids 
  * 
  * @returns {object} JSON data of requested variant
  */
