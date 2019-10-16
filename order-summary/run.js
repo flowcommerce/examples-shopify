@@ -14,7 +14,8 @@ const https = require('https');
 const path = require('path');
 
 /** "Samples" is the directory containing the input JSON files. Directory read from can be changed here. */
-const orderFilesDirectory = path.resolve(__dirname, 'samples');
+const inputDirName = 'samples'
+const orderFilesDirectory = path.resolve(__dirname, inputDirName);
 
 
 /**
@@ -67,7 +68,7 @@ fs.readdir("./samples", function (err, files) {
   }
 
   files.forEach(async function (file, index) {
-    console.log('FILE OUTPUT ===>', file);
+    console.log(`Reading ${inputDirName}/${file} ===> output/${file}`)
     let rawdata = fs.readFileSync(`${orderFilesDirectory}/${file}`);
     let order = JSON.parse(rawdata);
     const completedOrder = await parseOrder(order)
