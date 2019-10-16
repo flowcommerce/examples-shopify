@@ -91,15 +91,17 @@ function getURLforID(id, apiData) {
   const currentItem = apiData.find(o => o.number == id)
   let url
   if (currentItem){
-    const firstImage = currentItem.images[0]
     const imageWithCheckoutTag = currentItem.images.find(function(image){
       return image.tags.includes('checkout');
     })
 
     if (imageWithCheckoutTag){
       url = imageWithCheckoutTag.url;
-    }else{
-      url = firstImage.url;
+    } else {
+      const firstImage = currentItem.images[0]
+      if (firstImage){
+        url = firstImage.url;
+      }
     }
   }
   return url 
