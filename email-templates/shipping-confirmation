@@ -207,13 +207,13 @@
                                   {% endif %}
                                 </td>
                                 <td class="order-list__price-cell">
-                                    {% unless line.properties.flow_line_total %}
+                                  {% unless line.properties.flow_line_total %}
                                   {% if line.original_line_price != line.line_price %}
                                   <del class="order-list__item-original-price">{{ line.original_line_price | money }}</del>
                                   {% endif %}
                                   {% endunless %}
-                                  {% if line.properties.flow_line_price %}
-                                  <p class="order-list__item-price">{{ line.properties.flow_line_price }}</p>
+                                  {% if line.properties.flow_line_unit_price %}
+                                  <p class="order-list__item-price">{{ line.properties.flow_line_unit_price }}</p>
                                   {% else %}
                                   <p class="order-list__item-price">{{ line.line_price | money }}</p>
                                   {% endif %}
@@ -280,8 +280,8 @@
                                   <del class="order-list__item-original-price">{{ line.original_line_price | money }}</del>
                                   {% endif %}
                                   {% endunless %}
-                                  {% if line.properties.flow_line_price %}
-                                  <p class="order-list__item-price">{{ line.properties.flow_line_price }}</p>
+                                  {% if line.properties.flow_line_unit_price %}
+                                  <p class="order-list__item-price">{{ line.properties.flow_line_unit_price }}</p>
                                   {% else %}
                                   <p class="order-list__item-price">{{ line.line_price | money }}</p>
                                   {% endif %}

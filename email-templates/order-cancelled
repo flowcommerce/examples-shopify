@@ -173,8 +173,8 @@
             {% endunless %}
             <p class="order-list__item-price">
               {% if line.final_line_price > 0 %}
-                {% if line.properties.flow_line_price %}
-                  {{ line.properties.flow_line_price }}
+                {% if line.properties.flow_line_unit_price %}
+                  {{ line.properties.flow_line_unit_price }}
                 {% else %}
                   {{ line.final_line_price | money }}
                 {% endif %}
