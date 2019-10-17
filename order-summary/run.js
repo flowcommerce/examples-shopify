@@ -77,7 +77,7 @@ async function getFlowItemFromVariant(variantIDs) {
 }
 
 /** Loop through all the files in the input directory and parse order. */
-fs.readdir(`${inputDirName}`, function (err, files) {
+fs.readdir(inputDirName, function (err, files) {
   if (err) {
     console.error('Could not list the directory.', err)
     process.exit(1)
