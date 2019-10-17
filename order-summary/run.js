@@ -39,7 +39,7 @@ function makeFlowAPICall(variantIDs) {
       json: true,
       resolveWithFullResponse: true,
       headers: {
-        'Authorization': 'Basic ' + new Buffer(flowAPIKey + ':').toString('base64'),
+        'Authorization': 'Basic ' + new Buffer.from(flowAPIKey + ':').toString('base64'),
       }
     }
 
