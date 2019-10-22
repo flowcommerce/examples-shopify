@@ -66,6 +66,17 @@ function makeFlowAPICall(variantIDs) {
  *  beyond this comment.
  */
 
+/** Helper to flatten response data when > 100 objects  */
+function flattenResponse(response) {
+  const flatObject = []
+  response.forEach(arrayOf100 => {
+    arrayOf100.forEach(obj => {
+      flatObject.push(obj)
+    })
+  })
+  return flatObject
+}
+
  /** Helper function to break total number of Variant IDs into 100 ID chunks */
 async function getFlowItemFromVariant(variantIDs) {
   const apiCallPromises = []
@@ -73,7 +84,8 @@ async function getFlowItemFromVariant(variantIDs) {
     apiCallPromises.push(makeFlowAPICall(variantIDs.slice(i, i + 100)))
   }
   const flowObjects = await Promise.all(apiCallPromises)
-  return flowObjects.flat()
+  const flatResponse = flattenResponse(flowObjects)
+  return flatResponse
 }
 
 /** Loop through all the files in the input directory and parse order. */
@@ -182,31 +194,6 @@ async function parseOrder(order, fnVariantToFlowItem) {
       name: line.name,
       attributes: attributes,
       quantity: line.quantity,
-      unit: {
-        price: {
-          amount: line.price,
-          currency: currency,
-          label: '$' + line.price,
-        },
-        total: {
-          amount: line.price,
-          currency: currency,
-          label: '$' + line.price,
-        },
-        discount: {
-          amount: line.total_discount,
-          currency: currency,
-          label: '$' + line.total_discount,
-        },
-        tax: {
-          rate: tax ? tax.rate : '',
-          value: {
-            amount: tax ? tax.price : '',
-            currency: currency,
-            label: tax ? '$' + tax.price : '',
-          },
-        }
-      },
       line: {
         price: {
           amount: line.price,
@@ -238,7 +225,6 @@ async function parseOrder(order, fnVariantToFlowItem) {
     }
 
     if (!tax) {
-      delete lineData.unit.tax
       delete lineData.line.tax
     }
 
