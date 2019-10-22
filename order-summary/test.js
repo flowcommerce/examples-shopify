@@ -8,6 +8,13 @@
  *  @requires     Mocha Test framework
  *  @requires     Chai Assertion Library
  * 
+ *  Installing Mocha & Chai:
+ *  
+ *  npm install mocha -s
+ *  npm install chai -s
+ *  
+ *  
+ * 
  * 
  *  Uses expect assertions to look for nested properties of JSON file, test cases are:
  *  1. Output should not include undefined image URL
