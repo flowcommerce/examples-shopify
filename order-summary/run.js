@@ -14,7 +14,7 @@ const https = require('https')
 const path = require('path')
 
 /** 'Samples' is the directory containing the input JSON files. Directory read from can be changed here. */
-const inputDirName = 'samples_large'
+const inputDirName = 'samples'
 const orderFilesDirectory = path.resolve(__dirname, inputDirName)
 
 /**
