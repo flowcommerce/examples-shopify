@@ -5,7 +5,6 @@
  *  @author       Matt Kersner
  *  @author       John Bell
  *
- *  @requires     Node 11+
  *  @requires     Flow API key
  */
 
