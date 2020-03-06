@@ -1,6 +1,6 @@
 # Redirect International Customers to Flow
 
-Some Internation Shoppers and Domestic Shoppers who want to ship internationally are not able to recieve the benefits of Flow when attempting to checkout using the Shopify Checkout.  
+Some International Shoppers and Domestic Shoppers who want to ship internationally are not able to receive the benefits of Flow when attempting to checkout using the Shopify Checkout.  
 
 With 3 small changes to the **checkout.liquid** file, those customers will be able to use the full benefits of Flow.
 
