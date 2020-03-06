@@ -15,7 +15,7 @@ Adding Flow.js to Checkout.liquid will allow Flow to validate shipping availabil
 
 This is the same code that is added to the head of theme.liquid.
 
-```
+```javascript
 {% if shop.name == 'fnovadev2' %}
     {% assign flowUrl = 'https://shopify-cdn.flow.io/fashionnova-sandbox/js/v0/flow.js?shop=fnovadev2.myshopify.com' %}
 {% else %}
@@ -41,7 +41,7 @@ This is the same code that is added to the head of theme.liquid.
 **Add Country validation JS Code**  
 Adding this JS function will validate if the user changes the shipping country to a Flow supported country and redirect them to Flow Checkout UI.
 
-```
+```javascript
 Flow.set('on', 'ready', function () {
 	checkForFlowAvailability();
 	$('#checkout_shipping_address_country').change(function(){
@@ -81,7 +81,7 @@ Flow.set('on', 'ready', function () {
 **Add loading icon for redirect**
 The final addition can be added to the checkout.css file or a similar styled loader gif could be used in place.
 
-```
+```css
 .loader {
   margin: 100px auto;
   font-size: 25px;
