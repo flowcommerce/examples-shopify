@@ -4,7 +4,7 @@ Some Internation Shoppers and Domestic Shoppers who want to ship internationally
 
 With 3 small changes to the **checkout.liquid** file, those customers will be able to use the full benefits of Flow.
 
-![Demo]()
+![Checkout Example](https://github.com/flowcommerce/examples-shopify/blob/checkout-redirect/checkoout-redirect/checkout-redirect-example.gif)
 
 
 ## Additions to Checkout.liquid
