@@ -100,7 +100,7 @@ Add this HTML content to the page to be show shoppers the option to ship with Fl
        </div>
        <div class="popup-body">
          <p>You have selected to ship to a destinmation outside of the United States.</p>
-         <p>Are you sure you want to continue?</p>
+         <p>Please click OK to enter our global checkout</p>
        </div>
        <input id="ship-with-flow" class="popup-button" type="button" value="OK">
      </div>
