@@ -6,7 +6,7 @@ Different code samples for interacting with Flow for Shopify customers.
 
 This directory contains an example of how to redirect Shopify customers to Flow Checkout UI.
 
-## checkout-redirect
+## email-templates
 
 This directory contains an example of how to localize Shopify transactional email templates.
 
