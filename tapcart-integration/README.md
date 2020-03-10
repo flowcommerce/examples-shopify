@@ -1,13 +1,15 @@
 # Tapcart Integration Guide
-You may find it useful to review the basic integration guide for Shopify [Overview of Shopify Integrations](https://docs.flow.io/docs/integrate-with-shopify). For your custom integration with Flow, and more specifically Fashion Nova's existing Flow Organization, please refer to this guide which highlights the major pieces required:
+You may find it useful to review the basic integration guide for Shopify [Overview of Shopify Integrations](https://docs.flow.io/docs/integrate-with-shopify). This guide highlights the major pieces required:
 - Estabilishing a Flow Experience
 - Localizing Item Prices
 - Redirecting to Flow Checkout UI
 
-There will likely be more integration points than just these three and we can help flesh out this documentation as we get a better understanding of the scope of your custom integration.
+There will likely be more integration points than just these three and we can help flesh out this documentation as we get a better understanding of the scope of this custom integration.
+
+IMPORTANT NOTE: Each API call in this guide will require a basic authorization header containing a unique API key which is generated from Flow Console per integration. If you do not already have access to Flow Console, please ask a Flow representative to invite you by your email address.
 
 ## Establishing a Flow Experience
-Every international shopping experience with Flow starts with establishing where the customer is located and creating a session based on that geolocation. When any customer hits the page without Flow session data saved, send a POST to https://api.flow.io/sessions/organizations/fashionnova-sandbox containing a session_form in the body:
+Every international shopping experience with Flow starts with establishing where the customer is located and creating a session based on that geolocation. When any customer hits the page without Flow session data saved, send a POST to https://api.flow.io/sessions/organizations/${organization_id} containing a session_form in the body and replace the organization_id token with the same Flow Organization ID which is currently integrated with the existing Shopify store:
 
 ```json
 "session_form": {
@@ -160,7 +162,7 @@ Here are the possible item availability statuses:
 ```
 
 ## Redirecting to Flow Checkout UI
-Sending users with a Shopify cart to Flow Checkout UI is done with our Shopify cart conversion API. POST to https://api.flow.io/fashionnova-sandbox/experiences/${experience}/shopify/cart/checkouts containing a shopify_cart object in the body which can be pull from Shopify API and replacing the experience token with the active session experience for the user being redirected. This experience value should already be stored from the geolocation step earlier.
+Sending users with a Shopify cart to Flow Checkout UI is done with our Shopify cart conversion API. POST to https://api.flow.io/${organization_id}/experiences/${experience}/shopify/cart/checkouts containing a shopify_cart object in the body. shopify_cart can be pulled directly from Shopify API and replace the experience and organization_id tokens with values taken from the the active session for the user being redirected. This session data should already be stored from the geolocation step earlier.
 
 Below is a reflection of the Shopify objects expected for this checkout redirect to work properly:
 ```json
