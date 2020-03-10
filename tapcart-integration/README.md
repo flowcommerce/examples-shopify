@@ -226,3 +226,5 @@ Below is a reflection of the Shopify objects expected for this checkout redirect
   ]
 }
 ```
+
+Successful calls to this API will return a URL where the user can be sent to Flow Checkout UI.
