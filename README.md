@@ -2,10 +2,19 @@
 
 Different code samples for interacting with Flow for Shopify customers.
 
+## checkout-redirect
+
+This directory contains an example of how to redirect Shopify customers to Flow Checkout UI.
+
+## checkout-redirect
+
+This directory contains an example of how to localize Shopify transactional email templates.
+
 ## order-summary
 
 This directory contains an example of how to convert a shopify order into a Flow Order Summary.
 
-## Usage
+## tapcart-integration
 
-Add JSON file in the order-summary/samples directory and in the command line run `node run.js` in the order-summary directory. The JSON file will then be parsed and converted into a Flow Order Summary, with the output going into the output folder.
+This directory is an integration guide intended to help connect Tapcart apps with Flow and provide the same Flow localized experiences in those native mobile apps as Flow does on Shopify.
+
