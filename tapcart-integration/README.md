@@ -5,6 +5,8 @@ You may find it useful to review the basic integration guide for Shopify [Overvi
 - [Redirecting to Flow Checkout UI with a Shopify Cart](#redirecting-to-flow-checkout-ui-with-a-shopify-cart)
 - [Redirecting to Flow Checkout UI without a Shopify Cart](#redirecting-to-flow-checkout-ui-without-a-shopify-cart)
 
+As you likely noticed, there are two options presented for redirecting to checkout. The main benefit to using our Shopify Cart redirection method is it will match 1:1 the functionality expected from our standard Shopify integrations such as the use of Shopify promotions. Redirecting without an existing Shopify cart can also have discounts applied in a variety of ways, one of which is documented [here](#discounts).
+
 There will likely be more integration points than just these three and we can help flesh out this documentation as we get a better understanding of the scope of this custom integration.
 
 IMPORTANT NOTE: Each API call in this guide will require a basic authorization header containing a unique API key which is generated from Flow Console per integration. If you do not already have access to Flow Console, please ask a Flow representative to invite you by your email address.
