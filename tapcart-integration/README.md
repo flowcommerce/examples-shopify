@@ -231,7 +231,7 @@ Below is a reflection of the Shopify objects expected for this checkout redirect
 Successful calls to this API will return a URL where the user can be sent to Flow Checkout UI.
 
 ## Redirecting to Flow Checkout UI without a Shopify Cart
-We have multiple options for redirecting users to checkout. The most secure recommendation for custom integrations is with our Checkout Token API. To create a Checkout Token, use POST https://api.flow.io/fashionnova-sandbox/checkout/tokens with a body containing a checkout_token_form:
+We have multiple options for redirecting users to checkout. The most secure recommendation for custom integrations is with our Checkout Token API. To create a Checkout Token, use POST https://api.flow.io/${organization_id}/checkout/tokens with a body containing a checkout_token_form:
 ```json
 "checkout_token_form": {
     "discriminator": "discriminator",
