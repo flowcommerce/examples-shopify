@@ -499,12 +499,12 @@ Line Item Form:
         }
     ]
 },
-    ```
+```
 
 ### Supporting Attributes
 
-    Checkout URLS:
-    ```json
+Checkout URLS:
+```json
     "checkout_urls_form": {
         "fields": [
         { "name": "continue_shopping", "type": "string", "required": false, "description": "If specified, will be stored on the order in the attribute named 'flow_continue_shopping_url' and will be used as the target URL for when a user chooses to Continue Shopping from Flow Checkout UI" },
