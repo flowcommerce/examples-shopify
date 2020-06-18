@@ -42,50 +42,46 @@ This is the same code that is added to the head of theme.liquid.
 Adding this JS function will validate if the user changes the shipping country to a Flow supported country and redirect them to Flow Checkout UI.
 
 ```javascript
-Flow.set('on', 'ready', function () {
-      checkForFlowAvailability();
-      $('#checkout_shipping_address_country').change(function(){
-          checkForFlowAvailability();
-      });
+Flow.set("on", "ready", function () {
+    //Checking for pageload
+    /*checkForFlowAvailability();*/
+    //handling country change
+    
+    $("#checkout_shipping_address_country").change(function(){
+        checkForFlowAvailability();
+    });
 
-      function checkForFlowAvailability(){
-          //console.log('Checking for Flow');
-          var shippingCountry = $('#checkout_shipping_address_country').val();
-        console.log(shippingCountry);
-        setCountry(shippingCountry);
-      }
+    function checkForFlowAvailability(){
+        var shippingCountry = $("#checkout_shipping_address_country").val();
+        Flow.setCountry(shippingCountry, {success:function(){
+            if(Flow.getExperience()){
+                 $("#flow-popup").show();
+            }
+        }});
+    }
 
-      function setCountry(iso3country){
-          //console.log('Setting Country');
-          Flow.setCountry(iso3country, {success:function(){
-              setCart();
+     
+     function modalClickHandler(){
+       	$("#ship-with-flow").click(function(e) {
+         	  	//handle ok button click
+            	e.stopPropagation();
+            	$(".content").prepend("<div class='loader'>Redirecting</div>");
+            	$(".content .wrap").remove();
+            	Flow.checkout.redirect();
+          });
+       
+        $("#flow-popup").click(function(e){
+          Flow.setCountry("USA", { success:function(){
+            console.log('success !');
+            $("#checkout_shipping_address_country").val("United States").change();
+            $("#flow-popup").hide();
+            $("#continue_button").show();
           }});
-      }
-
-      function setCart(){
-          //console.log('checking Experience');
-          if(Flow.getExperience()){
-          	  showFlowModal();
-          }
-      }
-
-      function showFlowModal(){
-        $('#flow-popup').click(function(){
-          		$('#checkout_shipping_address_country').val('United States').change();
-				$('#flow-popup').hide();
-          		$('#continue_button').show();
-          	});
-      	$('#continue_button').hide();
-      	$('#ship-with-flow').click(function(){
-      		$('.content').prepend('<div class="loader">Redirecting</div>');
-			$('.content .wrap').remove();
- 			Flow.cart.localize({success:function(){
-                  Flow.checkout.redirect();
-              }});
-      	});
-         $('#flow-popup').show();
-      }
-  });
+        });
+    }
+     //set the click events
+     modalClickHandler();
+});
 
 ```
 **Add Flow Shipping Modal**
