@@ -175,30 +175,82 @@ Another option for consuming localized prices is through our API. [Click here](h
 Here is the local_item model which is return from both the CSV and API export methods:
 ```json
 "local_item": {
-    { "name": "id", "type": "string" },
-    { "name": "experience", "type": "io.flow.common.v0.models.experience_summary" },
-    { "name": "center", "type": "io.flow.fulfillment.v0.models.center_summary", "required": false },
-    { "name": "item", "type": "io.flow.common.v0.models.catalog_item_reference" },
-    { "name": "pricing", "type": "local_item_pricing" },
-    { "name": "status", "type": "io.flow.catalog.v0.enums.subcatalog_item_status" }
+    "values": [
+        {
+            "name": "id",
+            "type": "string" 
+        },
+        {
+            "name": "experience",
+            "type": "io.flow.common.v0.models.experience_summary" 
+        },
+        {
+            "name": "center",
+            "type": "io.flow.fulfillment.v0.models.center_summary",
+            "required": false 
+        },
+        {
+            "name": "item",
+            "type": "io.flow.common.v0.models.catalog_item_reference" 
+        },
+        {
+            "name": "pricing",
+            "type": "local_item_pricing" 
+        },
+        {
+            "name": "status",
+            "type": "io.flow.catalog.v0.enums.subcatalog_item_status" 
+        }
+    ]
 }
 ```
 
 Here is the pricing model referenced in the local_item model:
 ```json
 "local_item_pricing": {
-    { "name": "price", "type": "io.flow.catalog.v0.models.localized_item_price", "description": "The localized item.price for this experience. This represents the price a consumer will pay to purchase this item in this experience." },
-    { "name": "vat", "type": "io.flow.catalog.v0.models.localized_item_vat", "description": "The localized VAT price for this experience.", "required": false },
-    { "name": "duty", "type": "io.flow.catalog.v0.models.localized_item_duty", "description": "The localized duty price for this experience.", "required": false },
-    { "name": "attributes", "type": "map[io.flow.common.v0.models.price_with_base]", "description": "All attributes with intent price as keys of this map - with each of those attributes mapped to its value in the local currency. For example, given an attribute named 'msrp' with intent 'price', this map will contain a key named 'msrp'" }
+    "values": [
+        {
+            "name": "price",
+            "type": "io.flow.catalog.v0.models.localized_item_price", 
+            "description": "The localized item.price for this experience. This represents the price a consumer will pay to purchase this item in this experience." 
+        },
+        {
+            "name": "vat",
+            "type": "io.flow.catalog.v0.models.localized_item_vat", 
+            "description": "The localized VAT price for this experience.",
+            "required": false 
+        },
+        {
+            "name": "duty",
+            "type": "io.flow.catalog.v0.models.localized_item_duty", 
+            "description": "The localized duty price for this experience.",
+            "required": false 
+        },
+        {
+            "name": "attributes",
+            "type": "map[io.flow.common.v0.models.price_with_base]",
+            "description": "All attributes with intent price as keys of this map - with each of those attributes mapped to its value in the local currency. For example, given an attribute named 'msrp' with intent 'price', this map will contain a key named 'msrp'"
+        }
+    ]
 }
 ```
 Here are the possible item status values:
 ```json
 "subcatalog_item_status": {
-    { "name": "excluded", "description": "The user has chosen to exclude the item from the associated subcatalog." },
-    { "name": "included", "description": "The item is included in the associated subcatalog." },
-    { "name": "restricted", "description": "Item is not allowed to be sold in the market associated with the given subcatalog." }
+    "values": [
+        {
+            "name": "excluded",
+            "description": "The user has chosen to exclude the item from the associated subcatalog."
+        },
+        {
+            "name": "included",
+            "description": "The item is included in the associated subcatalog."
+        },
+        {
+            "name": "restricted",
+            "description": "Item is not allowed to be sold in the market associated with the given subcatalog."
+        }
+    ]
 }
 ```
 
