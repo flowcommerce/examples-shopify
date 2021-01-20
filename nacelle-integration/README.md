@@ -164,6 +164,42 @@ Here are the possible item availability statuses:
 }
 ```
 
+## Localizing Item Prices via FTP Export
+Another option for consuming localized prices is through our FTP exports. [Click here](https://docs.flow.io/docs/csv-imports#reference-csv-file-templates) for details on how to register new FTP credentials. We have already configured deliveries for full localized item price export CSVs to be delivered once a day at 10:30AM EST and the delta of pricing updates every 5 minutes in the same format.
+
+## Localizing Item Prices via API
+Another option for consuming localized prices is through our API. [Click here](https://docs.flow.io/reference/experience#get-organization-experiences-experience_key-local-items) for details on the API endpoint which will return the same format of localized item data as our CSV exports. Its important to note that there is an upper limit of 100 items which should be returned per GET.
+
+Here is the local_item model which is return from both the CSV and API export methods:
+```json
+{
+    { "name": "id", "type": "string" },
+    { "name": "experience", "type": "io.flow.common.v0.models.experience_summary" },
+    { "name": "center", "type": "io.flow.fulfillment.v0.models.center_summary", "required": false },
+    { "name": "item", "type": "io.flow.common.v0.models.catalog_item_reference" },
+    { "name": "pricing", "type": "local_item_pricing" },
+    { "name": "status", "type": "io.flow.catalog.v0.enums.subcatalog_item_status" }
+}
+```
+
+Here is the local_item_pricing model referenced in the local_item model:
+```json
+{
+    { "name": "price", "type": "io.flow.catalog.v0.models.localized_item_price", "description": "The localized item.price for this experience. This represents the price a consumer will pay to purchase this item in this experience." },
+    { "name": "vat", "type": "io.flow.catalog.v0.models.localized_item_vat", "description": "The localized VAT price for this experience.", "required": false },
+    { "name": "duty", "type": "io.flow.catalog.v0.models.localized_item_duty", "description": "The localized duty price for this experience.", "required": false },
+    { "name": "attributes", "type": "map[io.flow.common.v0.models.price_with_base]", "description": "All attributes with intent price as keys of this map - with each of those attributes mapped to its value in the local currency. For example, given an attribute named 'msrp' with intent 'price', this map will contain a key named 'msrp'" }
+}
+```
+Here are the possible subcatalog_item_status values:
+```json
+{
+    { "name": "excluded", "description": "The user has chosen to exclude the item from the associated subcatalog." },
+    { "name": "included", "description": "The item is included in the associated subcatalog." },
+    { "name": "restricted", "description": "Item is not allowed to be sold in the market associated with the given subcatalog." }
+}
+```
+
 ## Redirecting to Flow Checkout UI with a Shopify Cart
 Sending users with a Shopify cart to Flow Checkout UI is done with our Shopify cart conversion API. POST to https://api.flow.io/${organization_id}/experiences/${experience}/shopify/cart/checkouts containing a shopify_cart object in the body. shopify_cart can be pulled directly from Shopify API and replace the experience and organization_id tokens with values taken from the the active session for the user being redirected. This session data should already be stored from the geolocation step earlier.
 
