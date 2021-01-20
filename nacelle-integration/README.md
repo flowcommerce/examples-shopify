@@ -1,7 +1,9 @@
 # Nacelle Integration Guide
 You may find it useful to review the basic integration guide for Shopify [Overview of Shopify Integrations](https://docs.flow.io/docs/integrate-with-shopify). This guide highlights the major pieces required:
 - [Estabilishing a Flow Experience](#establishing-a-flow-experience)
-- [Localizing Item Prices](#localizing-item-prices)
+- [Localizing Item Prices via Shopify Metafields](#localizing-item-prices-via-shopify-metafields)
+- [Localizing Item Prices via FTP Export](#localizing-item-prices-via-ftp-export)
+- [Localizing Item Prices via API](#localizing-item-prices-via-api)
 - [Redirecting to Flow Checkout UI with a Shopify Cart](#redirecting-to-flow-checkout-ui-with-a-shopify-cart)
 - [Redirecting to Flow Checkout UI without a Shopify Cart](#redirecting-to-flow-checkout-ui-without-a-shopify-cart)
 
@@ -52,7 +54,7 @@ In response you should receive an organization_session:
 
 Please cache this organization_session in the user's local storage. The most important piece of data returned here is the experience field. The experience is the value that Flow uses to determine which information to display to the user such as currency, pricing, tax, duties, availability, shipping options, payment options and more.
 
-## Localizing Item Prices
+## Localizing Item Prices via Shopify Metafields
 Excerpt from [Display Localized Pricing - Server Side](https://docs.flow.io/docs/display-localized-pricing#section-server-side):
 "All of the information from Flow is stored in a single String metafield. The data is compressed into a single value to ensure optimal performance when syncing information between Flow and Shopify. Since Shopify API enforces rate limits on how quickly it can provide data, having a single metafield per variant guarantees a deterministic amount of time to sync pricing information."
 
